@@ -10,28 +10,33 @@ Gem::Specification.new do |s|
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Darcy Laycock"]
   s.date = %q{2010-04-24}
-  s.description = %q{TODO: longer description of your gem}
+  s.description = %q{Automatically compiles app/scripts/*.coffee to javascript for rails awesomesauce.}
   s.email = %q{sutto@sutto.net}
   s.extra_rdoc_files = [
     "LICENSE",
+     "README.md",
      "README.rdoc"
   ]
   s.files = [
     ".document",
      ".gitignore",
      "LICENSE",
+     "README.md",
      "README.rdoc",
      "Rakefile",
      "app/controllers/barista_controller.rb",
+     "barista.gemspec",
      "config/routes.rb",
      "lib/barista.rb",
-     "lib/barista/compiler.rb"
+     "lib/barista/compiler.rb",
+     "lib/barista/tasks/barista.rake",
+     "lib/barista/version.rb"
   ]
   s.homepage = %q{http://github.com/Sutto/barista}
   s.rdoc_options = ["--charset=UTF-8"]
   s.require_paths = ["lib"]
   s.rubygems_version = %q{1.3.6}
-  s.summary = %q{TODO: one-line summary of your gem}
+  s.summary = %q{Transparent coffeescript support for rails 3}
 
   if s.respond_to? :specification_version then
     current_version = Gem::Specification::CURRENT_SPECIFICATION_VERSION
