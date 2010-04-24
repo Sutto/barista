@@ -56,7 +56,11 @@ module Barista
   end
   
   if defined?(Rails::Engine)
-    class Engine < Rails::Engine; end
+    class Engine < Rails::Engine
+      rake_tasks do
+        load File.expand_path('./barista/tasks/barista.rake', File.dirname(__FILE__))
+      end
+    end
   end
   
 end
