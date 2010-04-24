@@ -3,7 +3,8 @@ require 'pathname'
 
 module Barista
   
-  autoload :Compiler, 'barista/compiler'
+  autoload :Compiler,     'barista/compiler'
+  autoload :AroundFilter, 'barista/around_filter' 
   
   class << self
     
@@ -53,13 +54,24 @@ module Barista
       true
     end
     
+    # By default, only add it in dev / test
+    def add_filter?
+      Rails.env.test? || Rails.env.development?
+    end
+    
   end
   
   if defined?(Rails::Engine)
     class Engine < Rails::Engine
+      
       rake_tasks do
         load File.expand_path('./barista/tasks/barista.rake', File.dirname(__FILE__))
       end
+      
+      initializer "barista.wrap_filter" do
+        ApplicationController.around_filter(Barista::AroundFilter) if Barista.add_filter?
+      end
+      
     end
   end
   

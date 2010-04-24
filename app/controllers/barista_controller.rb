@@ -2,6 +2,7 @@ class BaristaController < ActionController::Base
   
   caches_page :show if Rails.env.production?
   
+  # Used for rendering on the fly.
   def show
     headers['Content-Type'] = "application/javascript"
     path = normalize_path(params[:js_path])
