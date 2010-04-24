@@ -1,3 +1,3 @@
 Rails.application.routes.draw do
-  match 'javascripts/*path.js', :to => 'barista#show'
+  match 'javascripts/*js_path.js', :to => 'barista#show'
 end

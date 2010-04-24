@@ -31,11 +31,11 @@ module Barista
       nil
     end
     
-    def compile_file!(file)
+    def compile_file!(file, force = false)
       file = file.to_s
       file = root.join(file).to_s unless file.include?(root.to_s)
-      destination_path = file.gsub(/\.(coffee|js)\Z/, '') + ".js"
-      return unless should_compile_file?(file, destination_path)
+      destination_path = file.gsub(/\.(coffee|js)\Z/, '').gsub(root.to_s, output_root.to_s) + ".js"
+      return unless force || should_compile_file?(file, destination_path)
       File.open(destination_path, "w+") do |f|
         f.write Compiler.compile(File.read(file))
       end
@@ -48,8 +48,9 @@ module Barista
       File.exist?(from) && (!File.exist?(to) || File.mtime(to) < File.mtime(from))
     end
     
-    def compile_all!
-      Dir[root.join("**", "*.coffee")].each {|file| compile_file! file }
+    def compile_all!(force = false)
+      Dir[root.join("**", "*.coffee")].each {|file| compile_file! file, force }
+      true
     end
     
   end
