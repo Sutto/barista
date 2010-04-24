@@ -14,15 +14,13 @@ Gem::Specification.new do |s|
   s.email = %q{sutto@sutto.net}
   s.extra_rdoc_files = [
     "LICENSE",
-     "README.md",
-     "README.rdoc"
+     "README.md"
   ]
   s.files = [
     ".document",
      ".gitignore",
      "LICENSE",
      "README.md",
-     "README.rdoc",
      "Rakefile",
      "app/controllers/barista_controller.rb",
      "barista.gemspec",

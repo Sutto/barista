@@ -12,4 +12,12 @@ for me), it provides `Barista.compile_all!` which takes all coffee files and com
 If you're using Jammit, this means you can simple run a rake task (`rake barista:brew` before running jammit) and
 your coffeescripts will be automatically provided, ready for bundling.
 
+To add to your project, simply add:
+
+    gem 'barista', '>= 0.1.0'
+    
+To your Gemfile and run bundle install.
+
+As you place .coffee files in app/scripts, it will automatically handle them for you.
+
 Barista require rails 3+ (but patches for Rails 2 will be accepted.)
