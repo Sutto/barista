@@ -43,7 +43,7 @@ module Barista
     end
     
     def invoke_coffee(path)
-      command = "#{self.class.bin_path} #{coffee_options} '#{path}'"
+      command = "#{self.class.bin_path} #{coffee_options} '#{path}'".squeeze(' ')
       %x(#{command})
     end
     
