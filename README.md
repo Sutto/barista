@@ -14,7 +14,7 @@ your coffeescripts will be automatically provided, ready for bundling.
 
 To add to your project, simply add:
 
-    gem 'barista', '>= 0.1.0'
+    gem 'barista', '>= 0.1.2'
     
 To your Gemfile and run bundle install.
 
