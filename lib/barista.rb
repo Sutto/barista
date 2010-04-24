@@ -28,7 +28,7 @@ module Barista
       full_path = root.join("#{path.gsub(/(\A\/|\/\Z)/, '')}.coffee")
       return unless full_path.exist? && full_path.readable?
       Compiler.compile(full_path.read)
-    rescue SysCallError
+    rescue SystemCallError
       nil
     end
     
@@ -42,7 +42,7 @@ module Barista
         f.write Compiler.compile(File.read(file))
       end
       true
-    rescue SysCallError
+    rescue SystemCallError
       false
     end
     
@@ -58,6 +58,14 @@ module Barista
     # By default, only add it in dev / test
     def add_filter?
       Rails.env.test? || Rails.env.development?
+    end
+    
+    def no_wrap?
+      defined?(@no_wrap) && @no_wrap
+    end
+    
+    def no_wrap=(value)
+      @no_wrap = !!value
     end
     
   end

@@ -32,12 +32,14 @@ module Barista
     protected
     
     def coffee_options
-      "-p"
+      ["-p"].tap do |options|
+        options << "--no-wrap" if Barista.no_wrap?
+      end.join(" ")
     end
     
-    def temp_file_for_content
+    def temp_file_for_content(content = @content)
       tf = Tempfile.new("barista-#{content_hash}.coffee")
-      tf.write @content
+      tf.write content
       tf.close
       tf
     end
