@@ -20,4 +20,7 @@ To your Gemfile and run bundle install.
 
 As you place .coffee files in app/scripts, it will automatically handle them for you.
 
+Please note that for Jammit compatibility etc, by default in test and dev mode it will
+automatically compile all coffeescripts that have changed before rendering the page.
+
 Barista require rails 3+ (but patches for Rails 2 will be accepted.)
