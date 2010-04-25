@@ -38,6 +38,7 @@ module Barista
       destination_path = file.gsub(/\.(coffee|js)\Z/, '').gsub(root.to_s, output_root.to_s) + ".js"
       return unless force || should_compile_file?(file, destination_path)
       Rails.logger.debug "[Barista] Compiling #{file} to #{destination_path}"
+      FileUtils.mkdir_p File.dirname(destination_path)
       File.open(destination_path, "w+") do |f|
         f.write Compiler.compile(File.read(file))
       end
