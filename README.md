@@ -30,7 +30,7 @@ Barista require rails 3+ (but patches for Rails 2 will be accepted.)
 Please note that barista lets you configure several options. To do this,
 it's as simple as setting up an initializer with:
 
-    rails g barista:barista_install
+    rails generate barista_install
     
 Then editing `config/initializers/barista_config.rb`.
 

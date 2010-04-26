@@ -69,6 +69,10 @@ module Barista
       defined?(@no_wrap) && @no_wrap
     end
     
+    def no_wrap!
+      self.no_wrap = false
+    end
+    
     def no_wrap=(value)
       @no_wrap = !!value
     end
