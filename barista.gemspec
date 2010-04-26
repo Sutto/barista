@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{barista}
-  s.version = "0.1.4"
+  s.version = "0.1.5"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Darcy Laycock"]
-  s.date = %q{2010-04-25}
+  s.date = %q{2010-04-27}
   s.description = %q{Automatically compiles app/scripts/*.coffee to javascript for rails awesomesauce.}
   s.email = %q{sutto@sutto.net}
   s.extra_rdoc_files = [
@@ -29,7 +29,10 @@ Gem::Specification.new do |s|
      "lib/barista/compiler.rb",
      "lib/barista/filter.rb",
      "lib/barista/tasks/barista.rake",
-     "lib/barista/version.rb"
+     "lib/barista/version.rb",
+     "lib/generators/barista_install/USAGE",
+     "lib/generators/barista_install/barista_install_generator.rb",
+     "lib/generators/barista_install/templates/initializer.rb"
   ]
   s.homepage = %q{http://github.com/Sutto/barista}
   s.rdoc_options = ["--charset=UTF-8"]
