@@ -8,8 +8,12 @@ module Barista
   
   class << self
     
+    def configure
+      yield self if block_given?
+    end
+    
     def root
-      @root ||= Rails.root.join("app", "scripts")
+      @root ||= Rails.root.join("app", "coffeescripts")
     end
     
     def root=(value)
