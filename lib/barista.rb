@@ -70,7 +70,7 @@ module Barista
     end
     
     def no_wrap!
-      self.no_wrap = false
+      self.no_wrap = true
     end
     
     def no_wrap=(value)
