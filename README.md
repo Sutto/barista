@@ -1,4 +1,4 @@
-# Barista
+# Barista #
 
 Barista is very, very similar to [bistro\_car](http://github.com/jnicklas/bistro_car) (infact, credit where credit is due - it shares similar
 code / is almost a fork).
@@ -14,7 +14,7 @@ your coffeescripts will be automatically provided, ready for bundling.
 
 To add to your project, simply add:
 
-    gem 'barista', '>= 0.1.2'
+    gem 'barista', '>= 0.2.0'
     
 To your Gemfile and run bundle install.
 
@@ -24,6 +24,17 @@ Please note that for Jammit compatibility etc, by default in test and dev mode i
 automatically compile all coffeescripts that have changed before rendering the page.
 
 Barista require rails 3+ (but patches for Rails 2 will be accepted.)
+
+## Frameworks ##
+
+One of the other main features Barista adds (over bistro\_car) is frameworks similar
+to Compass. The idea being, you add coffeescripts at runtime from gems etc. To do this,
+in your gem just have a coffeescript directory and then in you gem add the following code:
+
+    Barista::Framework.register 'name', 'full-path-to-directory' if defined?(Barista::Framework)
+    
+For an example of this in practice, check out [bhm-google-maps](http://github.com/YouthTree/bhm-google-maps)
+or, the currently-in-development, [shuriken](http://github.com/Sutto/shuriken).
 
 ## Configuration ##
 
