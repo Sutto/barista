@@ -29,6 +29,10 @@ module Barista
       @compiled_content.to_s
     end
     
+    def self.dirty?(from, to)
+      File.exist?(from) && (!File.exist?(to) || File.mtime(to) < File.mtime(from))
+    end
+    
     protected
     
     def coffee_options

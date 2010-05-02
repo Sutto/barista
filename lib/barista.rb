@@ -3,8 +3,9 @@ require 'pathname'
 
 module Barista
   
-  autoload :Compiler, 'barista/compiler'
-  autoload :Filter,   'barista/filter' 
+  autoload :Compiler,  'barista/compiler'
+  autoload :Filter,    'barista/filter'
+  autoload :Framework, 'barista/framework'
   
   class << self
     
@@ -18,6 +19,7 @@ module Barista
     
     def root=(value)
       @root = Pathname(value.to_s)
+      Framework.default_framework = nil
     end
     
     def output_root
@@ -28,20 +30,12 @@ module Barista
       @output_root = Pathname(value.to_s)
     end
     
-    def render_path(path)
-      full_path = root.join("#{path.gsub(/(\A\/|\/\Z)/, '')}.coffee")
-      return unless full_path.exist? && full_path.readable?
-      Compiler.compile(full_path.read)
-    rescue SystemCallError
-      nil
-    end
-    
     def compile_file!(file, force = false)
-      file = file.to_s
-      file = root.join(file).to_s unless file.include?(root.to_s)
-      destination_path = file.gsub(/\.(coffee|js)\Z/, '').gsub(root.to_s, output_root.to_s) + ".js"
-      return unless force || should_compile_file?(file, destination_path)
-      Rails.logger.debug "[Barista] Compiling #{file} to #{destination_path}"
+      file = Framework.full_path_for(file)
+      return if file.blank?
+      destination_path = self.output_path_for(file)
+      return unless force || Compiler.dirty?(file, destination_path)
+      debug "Compiling #{file}"
       FileUtils.mkdir_p File.dirname(destination_path)
       File.open(destination_path, "w+") do |f|
         f.write Compiler.compile(File.read(file))
@@ -51,13 +45,20 @@ module Barista
       false
     end
     
-    def should_compile_file?(from, to)
-      File.exist?(from) && (!File.exist?(to) || File.mtime(to) < File.mtime(from))
+    def compile_all!(force = false)
+      debug "Compiling all coffeescripts"
+      Framework.exposed_coffeescripts.each do |coffeescript|
+        compile_file! from, force
+      end
+      true
     end
     
-    def compile_all!(force = false)
-      Dir[root.join("**", "*.coffee")].each {|file| compile_file! file, force }
-      true
+    def output_path_for(file)
+      output_root.join(file.gsub(/^\//, '')).gsub(/\.coffee$/, '.js')
+    end
+    
+    def debug(message)
+      Rails.logger.debug "[Barista] #{message}" if defined?(Rails.logger) && Rails.logger
     end
     
     # By default, only add it in dev / test
