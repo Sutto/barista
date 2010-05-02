@@ -36,6 +36,23 @@ in your gem just have a coffeescript directory and then in you gem add the follo
 For an example of this in practice, check out [bhm-google-maps](http://github.com/YouthTree/bhm-google-maps)
 or, the currently-in-development, [shuriken](http://github.com/Sutto/shuriken).
 
+In your `Barista.configure` block, you can also configure on a per-application basis the output directory
+for individual frameworks (e.g. put shuriken into vendor/shuriken, bhm-google-maps into vendor/bhm-google-maps):
+
+    Barista.configure do |config|
+      config.change_output_prefix! 'shuriken',        'vendor/shuriken'
+      config.change_output_prefix! 'bhm-google-maps', 'vendor/bhm-google-maps'
+    end
+    
+Alternatively, to prefix all, you can use `Barista.each_framework` (if you pass true, it includes the 'default' framework
+which is your application root).
+
+    Barista.configure do |config|
+      config.each_framework do |framework|
+        config.change_output_prefix! framework.name, "vendor/#{framework.name}"
+      end
+    end
+
 ## Configuration ##
 
 Please note that barista lets you configure several options. To do this,

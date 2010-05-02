@@ -53,6 +53,16 @@ module Barista
       true
     end
     
+    def change_output_prefix!(framework, prefix = nil)
+      framework = framework.is_a?(Barista::Framework) ? framework : Barista::Framework[framework]
+      return unless framework
+      framework.output_prefix = prefix
+    end
+    
+    def each_framework(include_default = false)
+      Framework.all(include_default).each { yield if block_given? }
+    end
+    
     def output_path_for(file)
       output_root.join(file.to_s.gsub(/^\/+/, '')).to_s.gsub(/\.coffee$/, '.js')
     end
