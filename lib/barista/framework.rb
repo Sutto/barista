@@ -18,7 +18,7 @@ module Barista
     def self.exposed_coffeescripts
       all(true).inject([]) do |collection, fw|
         collection + fw.exposed_coffeescripts
-      end.uniq
+      end.uniq.sort_by { |f| f.length }
     end
     
     def self.full_path_for(script)
@@ -39,7 +39,7 @@ module Barista
       (@all ||= []).detect { |fw| fw.name == name }
     end
     
-    attr_reader :name, :framework_root, @output_prefix
+    attr_reader :name, :framework_root, :output_prefix
     
     def initialize(name, root, output_prefix = nil)
       @name           = name.to_s
@@ -52,7 +52,7 @@ module Barista
     end
     
     def short_name(script)
-      short_name = remove_prefix File.expand_path(script), @framework_root
+      short_name = remove_prefix script, @framework_root
       File.join *[@output_prefix, short_name].compact
     end
     
@@ -66,14 +66,14 @@ module Barista
     end
     
     def full_path_for(name)
-      full_path = File.join(@framework_root, remove_prefix(name, @output_prefix))
+      full_path = File.join(@framework_root, remove_prefix(name, @output_prefix.to_s))
       File.exist?(full_path) ? full_path : nil
     end
     
     protected
     
     def remove_prefix(path, prefix)
-      prefix.to_s.gsub /^#{Regexp.escape(prefix)}\/?/, ''
+      path.to_s.gsub /^#{Regexp.escape(prefix.to_s)}\/?/, ''
     end
     
   end
