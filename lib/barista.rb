@@ -31,14 +31,14 @@ module Barista
     end
     
     def compile_file!(file, force = false)
-      file = Framework.full_path_for(file)
-      return if file.blank?
+      origin_path, framework = Framework.full_path_for(file)
+      return if origin_path.blank?
       destination_path = self.output_path_for(file)
-      return unless force || Compiler.dirty?(file, destination_path)
-      debug "Compiling #{file}"
+      return unless force || Compiler.dirty?(origin_path, destination_path)
+      debug "Compiling #{file} from framework '#{framework.name}'"
       FileUtils.mkdir_p File.dirname(destination_path)
       File.open(destination_path, "w+") do |f|
-        f.write Compiler.compile(File.read(file))
+        f.write Compiler.compile(File.read(origin_path))
       end
       true
     rescue SystemCallError
@@ -48,13 +48,13 @@ module Barista
     def compile_all!(force = false)
       debug "Compiling all coffeescripts"
       Framework.exposed_coffeescripts.each do |coffeescript|
-        compile_file! from, force
+        compile_file! coffeescript, force
       end
       true
     end
     
     def output_path_for(file)
-      output_root.join(file.gsub(/^\/+/, '')).gsub(/\.coffee$/, '.js')
+      output_root.join(file.to_s.gsub(/^\/+/, '')).to_s.gsub(/\.coffee$/, '.js')
     end
     
     def debug(message)

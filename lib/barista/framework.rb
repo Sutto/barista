@@ -21,24 +21,30 @@ module Barista
     
     def self.full_path_for(script)
       script = script.to_s.gsub(/\.js$/, '.coffee').gsub(/^\/+/, '')
-      all.detect { |fw| fw.full_path_for(script) }
+      all.each do |fw|
+        full_path = fw.full_path_for(script)
+        return full_path, fw if full_path
+      end
+      nil
     end
     
-    def register(name, folder)
-      (@all ||= []) << self.new(name, folder)
+    def self.register(name, root)
+      (@all ||= []) << self.new(name, root)
     end
     
-    def initialize(name, folder)
-      @name             = name
-      @framework_folder = File.expand_path(folder)
+    attr_reader :name, :framework_root
+    
+    def initialize(name, root)
+      @name           = name
+      @framework_root = File.expand_path(root)
     end
     
     def coffeescripts
-      Dir[File.join(@framework_folder, "**", "*.coffee")]
+      Dir[File.join(@framework_root, "**", "*.coffee")]
     end
     
     def short_name(script)
-      File.expand_path(script).gsub /^#{Regexp.escape(@folder)}\/?/, ''
+      File.expand_path(script).gsub /^#{Regexp.escape(@framework_root)}\/?/, ''
     end
     
     def exposed_coffeescripts
@@ -46,7 +52,7 @@ module Barista
     end
     
     def full_path_for(name)
-      full_path = File.join(@framework_folder, name)
+      full_path = File.join(@framework_root, name)
       File.exist?(full_path) ? full_path : nil
     end
     
