@@ -54,7 +54,7 @@ module Barista
     end
     
     def output_path_for(file)
-      output_root.join(file.gsub(/^\//, '')).gsub(/\.coffee$/, '.js')
+      output_root.join(file.gsub(/^\/+/, '')).gsub(/\.coffee$/, '.js')
     end
     
     def debug(message)

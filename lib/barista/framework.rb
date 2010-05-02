@@ -20,6 +20,7 @@ module Barista
     end
     
     def self.full_path_for(script)
+      script = script.to_s.gsub(/\.js$/, '.coffee').gsub(/^\/+/, '')
       all.detect { |fw| fw.full_path_for(script) }
     end
     
