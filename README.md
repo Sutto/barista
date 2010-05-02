@@ -34,7 +34,8 @@ in your gem just have a coffeescript directory and then in you gem add the follo
     Barista::Framework.register 'name', 'full-path-to-directory' if defined?(Barista::Framework)
     
 For an example of this in practice, check out [bhm-google-maps](http://github.com/YouthTree/bhm-google-maps)
-or, the currently-in-development, [shuriken](http://github.com/Sutto/shuriken).
+or, the currently-in-development, [shuriken](http://github.com/Sutto/shuriken). The biggest advantage of this
+is you can then manage js dependencies using existing tools like bundler.
 
 In your `Barista.configure` block, you can also configure on a per-application basis the output directory
 for individual frameworks (e.g. put shuriken into vendor/shuriken, bhm-google-maps into vendor/bhm-google-maps):
@@ -67,4 +68,5 @@ Currently available options are:
 * root - the folder path to read coffeescripts from, defaults to app/coffeescripts
 * output\_root - the folder to write them into, defautls to public/javascripts.
 * no\_wrap - stop coffee from automatically wrapping JS in a closure.
+* change\_output\_prefix! - method to change the output prefix for a framework.
 
