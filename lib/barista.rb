@@ -37,12 +37,12 @@ module Barista
       return unless force || Compiler.dirty?(origin_path, destination_path)
       debug "Compiling #{file} from framework '#{framework.name}'"
       FileUtils.mkdir_p File.dirname(destination_path)
-      File.open(destination_path, "w+") do |f|
-        f.write Compiler.compile(File.read(origin_path))
-      end
-      true
+      content = Compiler.compile(origin_path)
+      # Write the rendered content to file.
+      File.open(destination_path, "w+") { |f| f.write content }
+      content
     rescue SystemCallError
-      false
+      ""
     end
     
     def compile_all!(force = false)

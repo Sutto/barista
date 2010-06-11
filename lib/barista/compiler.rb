@@ -6,22 +6,19 @@ module Barista
     class << self; attr_accessor :bin_path; end
     self.bin_path ||= "coffee"
     
-    def self.compile(content)
-      new(content).to_js
+    def self.compile(path)
+      new(path).to_js
     end
     
-    def initialize(content)
+    def initialize(path)
       @compiled = false
-      @content  = content
+      @path     = path
     end
     
     def compile!
       # Compiler code thanks to bistro_car.
-      tf = temp_file_for_content
-      @compiled_content = invoke_coffee(temp_file_for_content.path)
+      @compiled_content = invoke_coffee(@path)
       @compiled = true
-    ensure
-      tf.unlink rescue nil
     end
     
     def to_js
@@ -39,13 +36,6 @@ module Barista
       ["-p"].tap do |options|
         options << "--no-wrap" if Barista.no_wrap?
       end.join(" ")
-    end
-    
-    def temp_file_for_content(content = @content)
-      tf = Tempfile.new("barista-#{content_hash}.coffee")
-      tf.write content
-      tf.close
-      tf
     end
     
     def invoke_coffee(path)
