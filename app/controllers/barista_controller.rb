@@ -8,7 +8,7 @@ class BaristaController < ActionController::Base
     path = normalize_path(params[:js_path])
     p path
     return head(:forbidden) unless can_render_path?(path)
-    compiled = Barista.render_path(path)
+    compiled = Barista.compile_file!(path)
     compiled.nil? ? head(:not_found) : render(:text => compiled.to_s)
   end
   

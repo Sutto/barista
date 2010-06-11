@@ -2,34 +2,34 @@ require 'active_support'
 require 'pathname'
 
 module Barista
-  
+
   autoload :Compiler,  'barista/compiler'
   autoload :Filter,    'barista/filter'
   autoload :Framework, 'barista/framework'
-  
+
   class << self
-    
+
     def configure
       yield self if block_given?
     end
-    
+
     def root
       @root ||= Rails.root.join("app", "coffeescripts")
     end
-    
+
     def root=(value)
       @root = Pathname(value.to_s)
       Framework.default_framework = nil
     end
-    
+
     def output_root
       @output_root ||= Rails.root.join("public", "javascripts")
     end
-    
+
     def output_root=(value)
       @output_root = Pathname(value.to_s)
     end
-    
+
     def compile_file!(file, force = false)
       origin_path, framework = Framework.full_path_for(file)
       return if origin_path.blank?
