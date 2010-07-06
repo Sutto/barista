@@ -7,7 +7,7 @@ module Barista
     self.bin_path ||= "coffee"
 
     def self.available?
-      @coffee_available ||= system("command -v '#{self.bin_path}' >/dev/null 2>&1")
+      @coffee_available ||= system("which '#{self.bin_path}' >/dev/null 2>&1")
     end
 
     def self.check_availability!(silence = false)
