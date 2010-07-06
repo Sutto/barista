@@ -3,6 +3,9 @@ require 'pathname'
 
 module Barista
 
+  Error            = Class.new(StandardError)
+  CompilationError = Class.new(Error)
+
   autoload :Compiler,  'barista/compiler'
   autoload :Filter,    'barista/filter'
   autoload :Framework, 'barista/framework'
@@ -11,6 +14,15 @@ module Barista
 
     def configure
       yield self if block_given?
+    end
+
+    def exception_on_error?
+      @exception_on_error = true if !defined?(@exception_on_error)
+      !!@exception_on_error
+    end
+
+    def exception_on_error=(value)
+      @exception_on_error = value
     end
 
     def root
@@ -31,6 +43,7 @@ module Barista
     end
 
     def compile_file!(file, force = false)
+      return unless Compiler.available?
       origin_path, framework = Framework.full_path_for(file)
       return if origin_path.blank?
       destination_path = self.output_path_for(file)
@@ -44,7 +57,7 @@ module Barista
     rescue SystemCallError
       ""
     end
-    
+
     def compile_all!(force = false)
       debug "Compiling all coffeescripts"
       Framework.exposed_coffeescripts.each do |coffeescript|
@@ -52,56 +65,56 @@ module Barista
       end
       true
     end
-    
+
     def change_output_prefix!(framework, prefix = nil)
       framework = framework.is_a?(Barista::Framework) ? framework : Barista::Framework[framework]
       return unless framework
       framework.output_prefix = prefix
     end
-    
+
     def each_framework(include_default = false)
       Framework.all(include_default).each { yield if block_given? }
     end
-    
+
     def output_path_for(file)
       output_root.join(file.to_s.gsub(/^\/+/, '')).to_s.gsub(/\.coffee$/, '.js')
     end
-    
+
     def debug(message)
       Rails.logger.debug "[Barista] #{message}" if defined?(Rails.logger) && Rails.logger
     end
-    
+
     # By default, only add it in dev / test
     def add_filter?
       Rails.env.test? || Rails.env.development?
     end
-    
+
     def no_wrap?
       defined?(@no_wrap) && @no_wrap
     end
-    
+
     def no_wrap!
       self.no_wrap = true
     end
-    
+
     def no_wrap=(value)
       @no_wrap = !!value
     end
-    
+
   end
-  
+
   if defined?(Rails::Engine)
     class Engine < Rails::Engine
-      
+
       rake_tasks do
         load File.expand_path('./barista/tasks/barista.rake', File.dirname(__FILE__))
       end
-      
+
       initializer "barista.wrap_filter" do
         ActionController::Base.before_filter(Barista::Filter) if Barista.add_filter?
       end
-      
+
     end
   end
-  
+
 end
