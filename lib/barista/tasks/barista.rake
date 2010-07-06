@@ -6,7 +6,7 @@ namespace :barista do
       $stderr.puts "'#{Barista::Compiler.bin_path}' was unavailable."
       exit 1
     end
-    Barista.compile_all!(true)
+    Barista.compile_all! true, false
   end
 
 end

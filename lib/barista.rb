@@ -43,9 +43,12 @@ module Barista
       @output_root = Pathname(value.to_s)
     end
 
-    def compile_file!(file, force = false)
+    def compile_file!(file, force = false, silence_error = false)
       # Ensure we have a coffeescript compiler available.
-      Compiler.check_availability! || return ""
+      if !Compiler.check_availability!(silence_error)
+        debug "The coffeescript compiler at '#{Compiler.bin_path}' is currently unavailable."
+        return ""
+      end
       # Expand the path from the framework.
       origin_path, framework = Framework.full_path_for(file)
       return if origin_path.blank?
@@ -53,19 +56,24 @@ module Barista
       return unless force || Compiler.dirty?(origin_path, destination_path)
       debug "Compiling #{file} from framework '#{framework.name}'"
       FileUtils.mkdir_p File.dirname(destination_path)
-      content = Compiler.compile(origin_path)
+      content = Compiler.compile(origin_path, :silence_error => silence_error)
       # Write the rendered content to file.
-      File.open(destination_path, "w+") { |f| f.write content }
-      content
+      # nil is only when silence_error is true.
+      if content.nil?
+        debug "An error occured compiling '#{file}' - Leaving file as is."
+      else
+        File.open(destination_path, "w+") { |f| f.write content }
+        content
+      end
     rescue SystemCallError
-      debug "An error occured attempting to compile '#{file}'"
+      debug "An unknown error occured attempting to compile '#{file}'"
       ""
     end
 
-    def compile_all!(force = false)
+    def compile_all!(force = false, silence_error = true)
       debug "Compiling all coffeescripts"
       Framework.exposed_coffeescripts.each do |coffeescript|
-        compile_file! coffeescript, force
+        compile_file! coffeescript, force, silence_error
       end
       true
     end
