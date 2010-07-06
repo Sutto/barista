@@ -3,8 +3,9 @@ require 'pathname'
 
 module Barista
 
-  Error            = Class.new(StandardError)
-  CompilationError = Class.new(Error)
+  Error                    = Class.new(StandardError)
+  CompilationError         = Class.new(Error)
+  CompilerUnavailableError = Class.new(Error)
 
   autoload :Compiler,  'barista/compiler'
   autoload :Filter,    'barista/filter'
@@ -43,7 +44,9 @@ module Barista
     end
 
     def compile_file!(file, force = false)
-      return unless Compiler.available?
+      # Ensure we have a coffeescript compiler available.
+      Compiler.check_availability! || return ""
+      # Expand the path from the framework.
       origin_path, framework = Framework.full_path_for(file)
       return if origin_path.blank?
       destination_path = self.output_path_for(file)
@@ -55,6 +58,7 @@ module Barista
       File.open(destination_path, "w+") { |f| f.write content }
       content
     rescue SystemCallError
+      debug "An error occured attempting to compile '#{file}'"
       ""
     end
 

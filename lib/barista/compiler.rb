@@ -10,6 +10,14 @@ module Barista
       @coffee_available ||= system("command -v '#{self.bin_path}' >/dev/null 2>&1")
     end
 
+    def self.check_availability!
+      available?.tap do |available|
+        if Barista.exception_on_error?
+          raise CompilerUnavailableError, "The coffeescript compiler '#{self.bin_path}' could not be found."
+        end
+      end
+    end
+
     def self.compile(path)
       new(path).to_js
     end
@@ -46,7 +54,7 @@ module Barista
       command = "#{self.class.bin_path} #{coffee_options} '#{path}'".squeeze(' ')
       result = %x(#{command}).to_s
       if !$?.success? && Barista.exception_on_error?
-        raise Barista::CompilationError
+        raise CompilationError, "'#{command}' exited with a non-zero status."
       end
       result
     end
