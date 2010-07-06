@@ -56,7 +56,7 @@ module Barista
       result = %x(#{command}).to_s
       if !$?.success?
         if Barista.exception_on_error? && !@options[:silence]
-          raise CompilationError, "'#{command}' exited with a non-zero status."
+          raise CompilationError, "\"#{command}\" exited with a non-zero status."
         else
           result = nil
         end
