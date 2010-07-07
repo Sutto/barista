@@ -12,7 +12,7 @@ module Barista
 
     def self.check_availability!(silence = false)
       available?.tap do |available|
-        if Barista.exception_on_error? && !silence
+        if !available && Barista.exception_on_error? && !silence
           raise CompilerUnavailableError, "The coffeescript compiler '#{self.bin_path}' could not be found."
         end
       end
