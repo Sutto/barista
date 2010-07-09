@@ -18,7 +18,7 @@ To add to your project, simply add:
     
 To your Gemfile and run bundle install.
 
-As you place .coffee files in app/scripts, it will automatically handle them for you.
+As you place .coffee files in app/coffeescripts, it will automatically handle them for you.
 
 Please note that for Jammit compatibility etc, by default in test and dev mode it will
 automatically compile all coffeescripts that have changed before rendering the page.

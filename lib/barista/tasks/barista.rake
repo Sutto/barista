@@ -1,6 +1,6 @@
 namespace :barista do
 
-  desc "Compiles coffeescripts from app/scripts into public/javascripts"
+  desc "Compiles coffeescripts from app/coffeescripts into public/javascripts"
   task :brew => :environment do
     if !Barista::Compiler.available?
       $stderr.puts "'#{Barista::Compiler.bin_path}' was unavailable."

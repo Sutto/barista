@@ -8,7 +8,7 @@ begin
   Jeweler::Tasks.new do |gem|
     gem.name        = "barista"
     gem.summary     = %Q{Transparent coffeescript support for rails 3.}
-    gem.description = %Q{Automatically compiles app/scripts/*.coffee to javascript for rails awesomesauce.}
+    gem.description = %Q{Automatically compiles app/coffeescripts/*.coffee to javascript for rails awesomesauce.}
     gem.email       = "sutto@sutto.net"
     gem.homepage    = "http://github.com/Sutto/barista"
     gem.version     = Barista::Version::STRING

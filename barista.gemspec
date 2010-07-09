@@ -10,7 +10,7 @@ Gem::Specification.new do |s|
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Darcy Laycock"]
   s.date = %q{2010-07-18}
-  s.description = %q{Automatically compiles app/scripts/*.coffee to javascript for rails awesomesauce.}
+  s.description = %q{Automatically compiles app/coffeescripts/*.coffee to javascript for rails awesomesauce.}
   s.email = %q{sutto@sutto.net}
   s.extra_rdoc_files = [
     "LICENSE",
