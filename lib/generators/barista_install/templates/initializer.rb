@@ -14,16 +14,16 @@ Barista.configure do |c|
   
   # Change the output root for a framework:
   
-  # config.change_output_prefix! 'framework-name', 'output-prefix'
+  # c.change_output_prefix! 'framework-name', 'output-prefix'
   
   # or for all frameworks...
   
-  # config.each_framework do |framework|
-  #   config.change_output_prefix! framework.name, "vendor/#{framework.name}"
+  # c.each_framework do |framework|
+  #   c.change_output_prefix! framework.name, "vendor/#{framework.name}"
   # end
   
   # or, prefix the path for the app files:
   
-  # config.change_output_prefix! :default, 'my-app-name'
+  # c.change_output_prefix! :default, 'my-app-name'
   
 end

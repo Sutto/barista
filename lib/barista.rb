@@ -85,7 +85,7 @@ module Barista
     end
 
     def each_framework(include_default = false)
-      Framework.all(include_default).each { yield if block_given? }
+      Framework.all(include_default).each { |f| yield f if block_given? }
     end
 
     def output_path_for(file)
