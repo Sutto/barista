@@ -53,8 +53,12 @@ module Barista
 
     def invoke_coffee(path)
       command = "#{self.class.bin_path} #{coffee_options} '#{path}'".squeeze(' ')
+      Barista.invoke_hook! :before_compilation, path
       result = %x(#{command}).to_s
-      if !$?.success?
+      if $?.success?
+        Barista.invoke_hook! :compiled, path
+      else
+        Barista.invoke_hook! :compilation_failed, path, result
         if Barista.exception_on_error? && !@options[:silence]
           raise CompilationError, "\"#{command}\" exited with a non-zero status."
         else
@@ -62,10 +66,6 @@ module Barista
         end
       end
       result
-    end
-
-    def content_hash
-      @content_hash ||= Digest::SHA256.hexdigest(@content)
     end
 
   end

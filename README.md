@@ -40,19 +40,36 @@ is you can then manage js dependencies using existing tools like bundler.
 In your `Barista.configure` block, you can also configure on a per-application basis the output directory
 for individual frameworks (e.g. put shuriken into vendor/shuriken, bhm-google-maps into vendor/bhm-google-maps):
 
-    Barista.configure do |config|
-      config.change_output_prefix! 'shuriken',        'vendor/shuriken'
-      config.change_output_prefix! 'bhm-google-maps', 'vendor/bhm-google-maps'
+    Barista.configure do |c|
+      c.change_output_prefix! 'shuriken',        'vendor/shuriken'
+      c.change_output_prefix! 'bhm-google-maps', 'vendor/bhm-google-maps'
     end
     
 Alternatively, to prefix all, you can use `Barista.each_framework` (if you pass true, it includes the 'default' framework
 which is your application root).
 
-    Barista.configure do |config|
-      config.each_framework do |framework|
-        config.change_output_prefix! framework.name, "vendor/#{framework.name}"
+    Barista.configure do |c|
+      c.each_framework do |framework|
+        c.change_output_prefix! framework.name, "vendor/#{framework.name}"
       end
     end
+    
+## Hooks ##
+
+Barista lets you hook into the compilation at several stages. Namely:
+
+* before compilation
+* after compilation
+* after compilation fails
+
+To hook into these hooks, you can use like so:
+
+* `Barista.before_compilation { |path| puts "Barista: Compiling #{path}" }`
+* `Barista.on_compilation { |path| puts "Barista: Successfully compiled #{path}" }`
+* `Barista.on_compilation_error { |path, output| puts "Barista: Compilation of #{path} failed with:\n#{output}" }`
+
+These allow you to do things such as notify on compilation, automatically
+perform compression post compilation and a variety of other cool things.
 
 ## Configuration ##
 

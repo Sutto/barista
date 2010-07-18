@@ -10,8 +10,33 @@ module Barista
   autoload :Compiler,  'barista/compiler'
   autoload :Filter,    'barista/filter'
   autoload :Framework, 'barista/framework'
+  autoload :Hooks,     'barista/hooks'
 
   class << self
+
+    def hooks
+      @hooks ||= Hooks.new
+    end
+    
+    def on_hook!(name, *args, &blk)
+      hooks.on(name, *args, &blk)
+    end
+    
+    def invoke_hook!(name, *args)
+      hooks.invoke!(name, *args)
+    end
+    
+    def on_compilation_error(&blk)
+      on_hook! :compilation_failed, &blk
+    end
+    
+    def on_compilation(&blk)
+      on_hook! :compiled, &blk
+    end
+    
+    def before_compilation(&blk)
+      on_hook! :before_compilation, &blk
+    end
 
     def configure
       yield self if block_given?
