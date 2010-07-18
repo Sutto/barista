@@ -66,7 +66,9 @@ To hook into these hooks, you can use like so:
 
 * `Barista.before_compilation { |path| puts "Barista: Compiling #{path}" }`
 * `Barista.on_compilation { |path| puts "Barista: Successfully compiled #{path}" }`
+* `Barista.on_compilation_with_warning { |path, output| puts "Barista: Compilation of #{path} had a warning:\n#{output}" }`
 * `Barista.on_compilation_error { |path, output| puts "Barista: Compilation of #{path} failed with:\n#{output}" }`
+
 
 These allow you to do things such as notify on compilation, automatically
 perform compression post compilation and a variety of other cool things.

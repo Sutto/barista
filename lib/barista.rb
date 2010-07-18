@@ -18,24 +18,28 @@ module Barista
       @hooks ||= Hooks.new
     end
     
-    def on_hook!(name, *args, &blk)
+    def on_hook(name, *args, &blk)
       hooks.on(name, *args, &blk)
     end
     
-    def invoke_hook!(name, *args)
-      hooks.invoke!(name, *args)
+    def invoke_hook(name, *args)
+      hooks.invoke(name, *args)
     end
     
     def on_compilation_error(&blk)
-      on_hook! :compilation_failed, &blk
+      on_hook :compilation_failed, &blk
     end
     
     def on_compilation(&blk)
-      on_hook! :compiled, &blk
+      on_hook :compiled, &blk
+    end
+    
+    def on_compilation_with_warning(&blk)
+      on_hook :compiled_with_warning, &blk 
     end
     
     def before_compilation(&blk)
-      on_hook! :before_compilation, &blk
+      on_hook :before_compilation, &blk
     end
 
     def configure

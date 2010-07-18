@@ -1,4 +1,5 @@
 require 'digest/sha2'
+require 'open4'
 
 module Barista
   class Compiler
@@ -53,19 +54,27 @@ module Barista
 
     def invoke_coffee(path)
       command = "#{self.class.bin_path} #{coffee_options} '#{path}'".squeeze(' ')
-      Barista.invoke_hook! :before_compilation, path
-      result = %x(#{command}).to_s
-      if $?.success?
-        Barista.invoke_hook! :compiled, path
+      Barista.invoke_hook :before_compilation, path
+      pid, stdin, stdout, stderr = Open4.popen4(command)
+      stdin.close
+      _, status = Process.waitpid2(pid)
+      out = stdout.read.strip
+      err = stderr.read.strip
+      if status.success?
+        if err.blank?
+          Barista.invoke_hook :compiled, path
+        else
+          Barista.invoke_hook :compiled_with_warning, path, err
+        end
       else
-        Barista.invoke_hook! :compilation_failed, path, result
+        Barista.invoke_hook :compilation_failed, path, err
         if Barista.exception_on_error? && !@options[:silence]
           raise CompilationError, "\"#{command}\" exited with a non-zero status."
         else
-          result = nil
+          out = nil
         end
       end
-      result
+      out
     end
 
   end

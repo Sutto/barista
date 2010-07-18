@@ -24,6 +24,13 @@ Barista.configure do |c|
   
   # or, prefix the path for the app files:
   
-  # c.change_output_prefix! :default, 'my-app-name'
+  # c.change_output_prefix! :default, 'my-app-name'  
+  
+  # or, hook into the compilation:
+  
+  # c.before_compilation   { |path|         puts "Barista: Compiling #{path}" }
+  # c.on_compilation       { |path|         puts "Barista: Successfully compiled #{path}" }
+  # c.on_compilation_error { |path, output| puts "Barista: Compilation of #{path} failed with:\n#{output}" }
+  # c.on_compilation_with_warning { |path, output| puts "Barista: Compilation of #{path} had a warning:\n#{output}" }
   
 end

@@ -13,6 +13,7 @@ begin
     gem.homepage    = "http://github.com/Sutto/barista"
     gem.version     = Barista::Version::STRING
     gem.authors     = ["Darcy Laycock"]
+    gem.add_dependency 'open4'
   end
   Jeweler::GemcutterTasks.new
 rescue LoadError
