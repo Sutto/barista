@@ -54,5 +54,6 @@ Gem::Specification.new do |s|
   else
     s.add_dependency(%q<open4>, [">= 0"])
   end
+  
 end
 
