@@ -61,6 +61,7 @@ Barista lets you hook into the compilation at several stages. Namely:
 * before compilation
 * after compilation
 * after compilation fails
+* after compilation complete
 
 To hook into these hooks, you can use like so:
 
@@ -68,6 +69,7 @@ To hook into these hooks, you can use like so:
 * `Barista.on_compilation { |path| puts "Barista: Successfully compiled #{path}" }`
 * `Barista.on_compilation_with_warning { |path, output| puts "Barista: Compilation of #{path} had a warning:\n#{output}" }`
 * `Barista.on_compilation_error { |path, output| puts "Barista: Compilation of #{path} failed with:\n#{output}" }`
+* `Barista.on_compilation_complete { puts "Barista: Successfully compiled all files" }`
 
 
 These allow you to do things such as notify on compilation, automatically
