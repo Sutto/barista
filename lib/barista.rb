@@ -41,6 +41,10 @@ module Barista
     def on_compilation_with_warning(&blk)
       on_hook :compiled_with_warning, &blk 
     end
+
+    def before_full_compilation(&blk)
+      on_hook :before_full_compilation, &blk
+    end
     
     def before_compilation(&blk)
       on_hook :before_compilation, &blk
@@ -105,6 +109,7 @@ module Barista
 
     def compile_all!(force = false, silence_error = true)
       debug "Compiling all coffeescripts"
+      Barista.invoke_hook :before_full_compilation
       Framework.exposed_coffeescripts.each do |coffeescript|
         compile_file! coffeescript, force, silence_error
       end
