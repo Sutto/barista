@@ -71,9 +71,12 @@ To hook into these hooks, you can use like so:
 * `Barista.on_compilation_error { |path, output| puts "Barista: Compilation of #{path} failed with:\n#{output}" }`
 * `Barista.on_compilation_complete { puts "Barista: Successfully compiled all files" }`
 
-
 These allow you to do things such as notify on compilation, automatically
 perform compression post compilation and a variety of other cool things.
+
+An excellent example of these hooks in use is [barista\_growl](http://github.com/TrevorBurnham/barista_growl),
+by Trevor Burnham - a gem perfect for development purposes that automatically shows growl messages
+on compilation.
 
 ## Configuration ##
 
