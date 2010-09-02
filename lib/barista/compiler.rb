@@ -55,7 +55,12 @@ module Barista
     def invoke_coffee(path)
       command = "#{self.class.bin_path} #{coffee_options} '#{path}'".squeeze(' ')
       Barista.invoke_hook :before_compilation, path
-      pid, stdin, stdout, stderr = Open4.popen4(command)
+ 
+      #jruby cannot use open4 because it uses fork. 
+      #This should hopefully work for both jruby and ruby
+      popen_class = IO.respond_to?(:popen4) ? IO : Open4
+ 
+      pid, stdin, stdout, stderr = popen_class.popen4(command)
       stdin.close
       _, status = Process.waitpid2(pid)
       out = stdout.read.strip
