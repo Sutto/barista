@@ -1,5 +1,7 @@
 # Barista #
 
+Barista is a rails plugin that transparently compiles CoffeeScript to JavaScript, by running the `coffee` compiler with Node.js. When a `.coffee` file is changed and the page is refreshed, it delays sending the `.js` file until it's been regenerated from the newly modified CoffeeScript. This way, you can refresh immediately after saving the `.coffee` file, and not worry about an old `.js` file being sent to the browser (as often happens when using `coffee --watch`).
+
 Barista is very, very similar to [bistro\_car](http://github.com/jnicklas/bistro_car) (infact, credit where credit is due - it shares similar
 code / is almost a fork).
 
