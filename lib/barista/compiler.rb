@@ -31,8 +31,8 @@ module Barista
 
     def compile!
       # Compiler code thanks to bistro_car.
-      @compiled_content = "/* DO NOT MODIFY. This file was compiled from\n *   #{@path}\n */\n\n" + 
-                          invoke_coffee(@path)
+      @compiled_content = invoke_coffee(@path)
+      @compiled_content = preamble + @compiled_content if Barista.add_preamble?
       @compiled = true
     end
 
@@ -46,6 +46,10 @@ module Barista
     end
 
     protected
+
+    def preamble
+      "/* DO NOT MODIFY. This file was compiled from\n *   #{@path}\n */\n\n"
+    end
 
     def coffee_options
       ["-p"].tap do |options|
