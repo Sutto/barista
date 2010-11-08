@@ -31,7 +31,8 @@ module Barista
 
     def compile!
       # Compiler code thanks to bistro_car.
-      @compiled_content = invoke_coffee(@path)
+      @compiled_content = "/* DO NOT MODIFY. This file was compiled from #{path}. */\n\n" + 
+                          invoke_coffee(@path)
       @compiled = true
     end
 
