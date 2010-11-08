@@ -140,6 +140,10 @@ module Barista
       Rails.env.test? || Rails.env.development?
     end
 
+    def add_preamble?
+      Rails.env.test? || Rails.env.development?
+    end
+
     def no_wrap?
       defined?(@no_wrap) && @no_wrap
     end
