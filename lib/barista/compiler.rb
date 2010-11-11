@@ -53,7 +53,7 @@ module Barista
 
     def coffee_options
       ["-p"].tap do |options|
-        options << "--no-wrap" if Barista.no_wrap?
+        options << "--bare" if Barista.no_wrap?
       end.join(" ")
     end
 
