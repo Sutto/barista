@@ -8,6 +8,7 @@ module Barista
   CompilerUnavailableError = Class.new(Error)
 
   autoload :Compiler,  'barista/compiler'
+  autoload :Compilers, 'barista/compilers'
   autoload :Filter,    'barista/filter'
   autoload :Framework, 'barista/framework'
   autoload :Hooks,     'barista/hooks'
@@ -137,24 +138,28 @@ module Barista
 
     # By default, only add it in dev / test
     def add_filter?
-      Rails.env.test? || Rails.env.development?
+      defined?(Rails) && (Rails.env.test? || Rails.env.development?)
     end
 
     def add_preamble?
-      Rails.env.test? || Rails.env.development?
+      defined?(Rails) && (Rails.env.test? || Rails.env.development?)
     end
 
     def no_wrap?
       defined?(@no_wrap) && @no_wrap
     end
+    alias bare? no_wrap?
 
     def no_wrap!
       self.no_wrap = true
     end
+    alias bare! no_wrap!
 
     def no_wrap=(value)
       @no_wrap = !!value
     end
+    alias bare= no_wrap= 
+
 
   end
 
