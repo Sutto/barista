@@ -160,6 +160,7 @@ module Barista
     end
     alias bare= no_wrap= 
 
+    delegate :bin_path, :bin_path=, :js_path, :js_path=, :to => Compiler
 
   end
 
