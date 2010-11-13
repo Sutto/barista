@@ -55,4 +55,8 @@ Barista.configure do |c|
   
   # The default compiler is auto detected.
   
+  # If you want to use a custom JS file, you can as well
+  # e.g. vendoring CoffeeScript in your application:
+  # c.js_path = Rails.root.join('public', 'javascripts', 'coffee-script.js')
+  
 end
