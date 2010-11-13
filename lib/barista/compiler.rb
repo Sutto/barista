@@ -13,6 +13,17 @@ module Barista
       [Compilers::Native, Compilers::Node]
     end
     
+    def self.compiler=(value)
+      name = "Barista::Compilers::#{value.to_s.classify}".constantize
+      self.compiler_klass = name
+    rescue
+      self.compiler_klass = nil
+    end
+    
+    def self.compiler
+      compiler_klass.name.underscore.gsub("barista/compilers/", '').to_sym
+    end
+    
     def self.compiler_klass
       @compiler_klass ||= compilers.detect(&:available?)
     end

@@ -136,14 +136,20 @@ module Barista
       Rails.logger.debug "[Barista] #{message}" if defined?(Rails.logger) && Rails.logger
     end
 
-    # By default, only add it in dev / test
-    def add_filter?
-      defined?(Rails) && (Rails.env.test? || Rails.env.development?)
+    def verbose?
+      @verbose ||= (defined?(Rails) && (Rails.env.test? || Rails.env.development?))
+    end
+    
+    def verbose!
+      self.verbose = true
+    end
+    
+    def verbose=(value)
+      @verbose = !!value
     end
 
-    def add_preamble?
-      defined?(Rails) && (Rails.env.test? || Rails.env.development?)
-    end
+    alias add_filter? verbose?
+    alias add_preamble? verbose?
 
     def no_wrap?
       defined?(@no_wrap) && @no_wrap
@@ -160,7 +166,8 @@ module Barista
     end
     alias bare= no_wrap= 
 
-    delegate :bin_path, :bin_path=, :js_path, :js_path=, :to => Compiler
+    delegate :bin_path, :bin_path=, :js_path, :js_path=, :compiler, :compiler=,
+             :compiler_klass, :compiler_klass=, :to => Compiler
 
   end
 

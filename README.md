@@ -1,6 +1,8 @@
 # Barista #
 
-Barista is a rails plugin that transparently compiles CoffeeScript to JavaScript, by running the `coffee` compiler with Node.js. When a `.coffee` file is changed and the page is refreshed, it delays sending the `.js` file until it's been regenerated from the newly modified CoffeeScript. This way, you can refresh immediately after saving the `.coffee` file, and not worry about an old `.js` file being sent to the browser (as often happens when using `coffee --watch`).
+Barista is a rails plugin that transparently compiles CoffeeScript to JavaScript. When a `.coffee` file is changed and the page is refreshed, it delays sending the `.js` file until it's been regenerated from the newly modified CoffeeScript. This way, you can refresh immediately after saving the `.coffee` file, and not worry about an old `.js` file being sent to the browser (as often happens when using `coffee --watch`).
+
+Barista supports using `therubyracer` when installed or, by default, the node.js version of CoffeeScript via the `coffee` executable.
 
 Barista is very, very similar to [bistro\_car](http://github.com/jnicklas/bistro_car) (infact, credit where credit is due - it shares similar
 code / is almost a fork).
@@ -29,9 +31,9 @@ Barista require rails 3+ (but patches for Rails 2 will be accepted.)
 
 ## Frameworks ##
 
-One of the other main features Barista adds (over bistro\_car) is frameworks similar
-to Compass. The idea being, you add coffeescripts at runtime from gems etc. To do this,
-in your gem just have a coffeescript directory and then in you gem add the following code:
+One of the other main features Barista adds (over other tools) is frameworks similar
+to Compass. The idea being, you add coffee scripts at runtime from gems etc. To do this,
+in your gem just have a `coffeescript` directory and then in you gem add the following code:
 
     Barista::Framework.register 'name', 'full-path-to-directory' if defined?(Barista::Framework)
     

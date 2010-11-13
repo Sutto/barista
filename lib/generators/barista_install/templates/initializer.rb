@@ -7,6 +7,8 @@ Barista.configure do |c|
   # Change the output root, causing Barista to compile into public/coffeescripts
   # c.output_root = Rails.root.join("public", "coffeescripts")
   
+  # Set the compiler
+  
   # Disable wrapping in a closure:
   # c.no_wrap = true
   # ... or ...
@@ -32,5 +34,25 @@ Barista.configure do |c|
   # c.on_compilation       { |path|         puts "Barista: Successfully compiled #{path}" }
   # c.on_compilation_error { |path, output| puts "Barista: Compilation of #{path} failed with:\n#{output}" }
   # c.on_compilation_with_warning { |path, output| puts "Barista: Compilation of #{path} had a warning:\n#{output}" }
+  
+  # Turn off preambles and exceptions on failure
+  
+  # c.verbose = false
+  
+  # Or, make sure it is always on
+  # c.verbose!
+  
+  # Changing the compiler
+  
+  # To use a customer compiler class:
+  # c.compiler_klass = MyAwesomeCompilerClass
+  # c.compiler = :null # Barista::Compilers::Null
+  
+  # To switch between the built in compilers:
+  # c.compiler = :native
+  # or...
+  # c.compiler = :node
+  
+  # The default compiler is auto detected.
   
 end
