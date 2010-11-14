@@ -14,6 +14,12 @@ begin
     gem.version     = Barista::Version::STRING
     gem.authors     = ["Darcy Laycock"]
     gem.add_dependency 'open4'
+    gem.add_dependency 'railties', '~> 3.0'
+
+    gem.add_development_dependency 'rspec', '~> 2.0.0.beta.22'
+    gem.add_development_dependency 'rr', '~> 1.0'
+    gem.add_development_dependency 'therubyracer'
+
   end
   Jeweler::GemcutterTasks.new
 rescue LoadError
