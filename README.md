@@ -87,16 +87,38 @@ on compilation.
 Please note that barista lets you configure several options. To do this,
 it's as simple as setting up an initializer with:
 
-    rails generate barista_install
+    rails generate barista:install
     
 Then editing `config/initializers/barista_config.rb`.
 
 Currently available options are:
 
-* root - the folder path to read coffeescripts from, defaults to app/coffeescripts
-* output\_root - the folder to write them into, defautls to public/javascripts.
-* no\_wrap - stop coffee from automatically wrapping JS in a closure.
-* change\_output\_prefix! - method to change the output prefix for a framework.
+* `root` - the folder path to read coffeescripts from, defaults to app/coffeescripts
+* `output_root` - the folder to write them into, defaults to public/javascripts.
+* `no_wrap` and `bare` - stop coffee from automatically wrapping JS in a closure.
+* `change_output_prefix!` - method to change the output prefix for a framework.
+* All of the hooks mentioned above.
+* `verbose` - whether or not barista will add a preamble to files.
+* `compiler` - One of `:native` or `:node`, to force the compiler version.
+* `compiler_klass` - A custom compiler class.
+* `js_path` - Path to the pure-javascript compiler 
+
+# Contributors / Credits
+
+The following people have all contributed to Barista:
+
+* [Xavier Shay](https://github.com/xaviershay) - Added preamble text to generated text in verbose mode.
+* [einarmagnus](https://github.com/einarmagnus) - Fixed jruby support.
+* [Matt Dean](https://github.com/trabian) - Added `before_full_compilation` and `on_compilation_complete` hooks.
+* [Trevor Burnham](https://github.com/TrevorBurnham) - Misc. documentation tweaks and hooks idea.
+* [Sean McCullough](https://github.com/mcculloughsean) - Initial switch to support bare (vs. no\_wrap)
+* [Ben Atkin](https://github.com/benatkin) - Docs work.
+
+Barista was originally heavily inspired by [Bistro Car](https://github.com/jnicklas/bistro_car), but taking a fundamentally
+different approach in a few areas.
+
+The Native JavaScript compiler was heavily inspired by and based on [Sam Stephenson's](https://github.com/sstephenson) fork of
+the ruby-coffee-script gem. All credit for the idea goes to him and the code is based on his simple approach.
 
 ## Note on Patches/Pull Requests ##
  
