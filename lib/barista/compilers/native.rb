@@ -1,3 +1,8 @@
+# Most of the code in here is from sstephenson's fantastic
+# fork of the ruby-coffee-script gem (since merged in to master).
+#
+# All credit hence belongs with him - I simply ported it to
+# work with Barista.
 module Barista
   module Compilers
     class Native < Base
