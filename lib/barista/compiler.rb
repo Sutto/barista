@@ -47,5 +47,9 @@ module Barista
     def self.compile(path, options = {})
       compiler_klass.new(path, options).to_js
     end
+
+    def self.dirty?(from, to)
+      compiler_klass.dirty?(from, to)
+    end
   end
 end
