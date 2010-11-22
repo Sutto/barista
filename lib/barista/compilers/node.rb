@@ -5,7 +5,7 @@ module Barista
     class Node < Base
       
       def self.available?
-        @node_coffee_available ||= system("test -x '#{Compiler.bin_path}' >/dev/null 2>&1")
+        @node_coffee_available ||= system("{ test -x '#{Compiler.bin_path}' || command -v '#{Compiler.bin_path}'; } >/dev/null 2>&1")
       end
       
       protected
