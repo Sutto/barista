@@ -9,12 +9,13 @@ module Barista
   CompilationError         = Class.new(Error)
   CompilerUnavailableError = Class.new(Error)
 
-  autoload :Compiler,  'barista/compiler'
-  autoload :Filter,    'barista/filter'
-  autoload :Framework, 'barista/framework'
-  autoload :Hooks,     'barista/hooks'
-  autoload :Server,    'barista/server'
-
+  autoload :Compiler,   'barista/compiler'
+  autoload :Filter,     'barista/filter'
+  autoload :Framework,  'barista/framework'
+  autoload :Hooks,      'barista/hooks'
+  autoload :Server,     'barista/server'
+  autoload :HamlFilter, 'barista/haml_filter'
+  autoload :Helpers,    'barista/helpers'
   autoload :Extensions, 'barista/extensions'
 
   class << self
@@ -93,7 +94,7 @@ module Barista
       @output_root = value.nil? ? nil : Pathname(value.to_s)
     end
 
-    has_boolean_options :verbose, :bare, :add_filter, :add_preamble, :exception_on_error
+    has_boolean_options :verbose, :bare, :add_filter, :add_preamble, :exception_on_error, :embedded_interpreter
 
     def no_wrap?
       deprecate! self, :no_wrap?, 'Please use bare? instead.'
@@ -121,6 +122,10 @@ module Barista
 
     # Default configuration options
 
+    def local_env?
+      %w(test development).include? Barista.env
+    end
+
     def default_for_env
       return Rails.env.to_s if defined?(Rails.env)
       ENV['RAILS_ENV'] || ENV['RACK_ENV'] || 'development'
@@ -144,19 +149,23 @@ module Barista
     end
 
     def default_for_verbose
-      %w(test development).include? Barista.env
+      local_env?
     end
 
     def default_for_add_filter
-      verbose?
+      local_env?
     end
 
     def default_for_add_preamble
-      verbose?
+      local_env?
     end
 
     def default_for_exception_on_error
       true
+    end
+    
+    def default_for_embedded_interpreter
+      local_env?
     end
 
     # Actual tasks on the barista module.
@@ -244,6 +253,14 @@ module Barista
       
       initializer 'barista.error_messages' do
         Barista::Compiler.setup_default_error_logger!
+      end
+      
+      initializer 'barista.haml_filter' do
+        Barista::HamlFilter.setup!
+      end
+
+      initializer 'barista.helpers' do
+        ActionController::Base.helper Barista::Helpers
       end
 
     end
