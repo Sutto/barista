@@ -209,12 +209,12 @@ module Barista
     end
 
     def change_output_prefix!(framework, prefix = nil)
-      framework = framework.is_a?(Barista::Framework) ? framework : Barista::Framework[framework]
+      framework = Barista::Framework[framework] unless framework.is_a?(Barista::Framework)
       framework.output_prefix = prefix if framework.present?
     end
 
-    def each_framework(include_default = false)
-      Framework.all(include_default).each { |f| yield f if block_given? }
+    def each_framework(include_default = false, &blk)
+      Framework.all(include_default).each(&blk)
     end
 
     def output_path_for(file)
@@ -235,7 +235,7 @@ module Barista
       end
 
       initializer "barista.wrap_filter" do
-        ActionController::Base.before_filter(Barista::Filter) if Barista.add_filter?
+        config.app_middleware.use Barista::Filter if Barista.add_filter?
       end
 
     end

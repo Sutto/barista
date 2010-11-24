@@ -9,7 +9,6 @@ module Barista
       
       def bin_path
         Barista.deprecate! self, :bin_path
-        # Do nothing currently.
         nil
       end
       
