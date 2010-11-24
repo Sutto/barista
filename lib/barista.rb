@@ -190,7 +190,11 @@ module Barista
       if content.nil?
         debug "An error occured compiling '#{file}' - Leaving file as is."
       else
-        File.open(destination_path, "w+") { |f| f.write content }
+        # Cache the file if possible.
+        begin
+          File.open(destination_path, "w+") { |f| f.write content }
+        rescue Errno::EACCES
+        end
         content
       end
     rescue SystemCallError
@@ -234,8 +238,12 @@ module Barista
         load File.expand_path('./barista/tasks/barista.rake', File.dirname(__FILE__))
       end
 
-      initializer "barista.wrap_filter" do
+      initializer 'barista.wrap_filter' do
         config.app_middleware.use Barista::Filter if Barista.add_filter?
+      end
+      
+      initializer 'barista.error_messages' do
+        Barista::Compiler.setup_default_error_logger!
       end
 
     end

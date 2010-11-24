@@ -37,6 +37,15 @@ module Barista
         File.exist?(from) && (!File.exist?(to) || File.mtime(to) < File.mtime(from))
       end
       
+      def setup_default_error_logger!
+        Barista.on_compilation_error do |where, message|
+          if Barista.verbose?
+            Barista.debug "There was an error compiling coffeescript from #{where}:"
+            message.each_line { |line| Barista.debug line.rstrip }
+          end
+        end
+      end
+      
     end
     
     def initialize(context, options = {})
@@ -65,7 +74,7 @@ module Barista
     rescue CoffeeScript::Error => e
       Barista.invoke_hook :compilation_failed, where, e.message
       if Barista.exception_on_error? && !@options[:silence]
-        raise CompilationError, "CoffeeScript encountered an error: #{e.message}"
+        raise CompilationError, "CoffeeScript encountered an error compiling #{where}: #{e.message}"
       end
       compilation_error_for where, e.message
     end
