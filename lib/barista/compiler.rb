@@ -39,41 +39,63 @@ module Barista
       
     end
     
-    def initialize(path, options = {})
+    def initialize(context, options = {})
       @compiled = false
       @options  = {}
-      @path     = path
+      setup_compiler_context context
     end
 
     def compile!
-      @compiled_content = invoke_coffee(@path)
-      @compiled_content = preamble + @compiled_content if Barista.add_preamble?
+      location          = @options.fetch(:origin, 'inline')
+      @compiled_content = compile(@context, location)
+      @compiled_content = preamble(location) + @compiled_content if Barista.add_preamble?
       @compiled         = true
     end
 
     def to_js
-      compile! unless @compiled
+      compile! unless defined?(@compiled) && @compiled
       @compiled_content
+    end
+    
+    def compile(script, where = 'inline')
+      Barista.invoke_hook :before_compilation, where
+      out = CoffeeScript.compile script, :bare => Barista.bare?
+      Barista.invoke_hook :compiled, where
+      out
+    rescue CoffeeScript::Error => e
+      Barista.invoke_hook :compilation_failed, where, e.message
+      if Barista.exception_on_error? && !@options[:silence]
+        raise CompilationError, "CoffeeScript encountered an error: #{e.message}"
+      end
+      compilation_error_for where, e.message
     end
 
     protected
 
-    def preamble
-      "/* DO NOT MODIFY. This file was compiled from\n * #{@path}\n */\n\n"
+    def preamble(location)
+      "/* DO NOT MODIFY. This file was compiled from:\n * #{location}\n * Compiled #{Time.now.httpdate}\n*/\n\n"
+    end
+        
+    def compilation_error_for(location, message)
+      details = "Compilation of '#{location}' failed:\n#{message}"
+      Barista.verbose? ?  "alert(#{details.to_json});" : nil
     end
     
-    def invoke_coffee(path)
-      script = File.read(path)
-      Barista.invoke_hook :before_compilation, path
-      out = CoffeeScript.compile script, :bare => Barista.bare?
-      Barista.invoke_hook :compiled, path
-      out
-    rescue CoffeeScript::Error => e
-      Barista.invoke_hook :compilation_failed, path, e.message
-      if Barista.exception_on_error? && !@options[:silence]
-        raise CompilationError, "CoffeeScript encountered an error: #{e.message}"
+    def setup_compiler_context(context)
+      if context.respond_to?(:read)
+        @context = context.read
+        @type    = :string
+        default_path = context.respond_to?(:path) ? context.path : 'inline'
+        @options[:origin] ||= default_path
+      elsif !context.include?("\n") && File.exist?(context)
+        @context = File.read(context)
+        @type    = :file
+        @options[:origin] ||= context
+      else
+        @context = context.to_s
+        @type    = :string
+        @options[:origin] ||= 'inline'
       end
-      nil
     end
     
   end
