@@ -1,6 +1,8 @@
 require 'active_support'
 require 'pathname'
 
+require 'coffee_script'
+
 module Barista
 
   Error                    = Class.new(StandardError)
@@ -11,8 +13,17 @@ module Barista
   autoload :Filter,    'barista/filter'
   autoload :Framework, 'barista/framework'
   autoload :Hooks,     'barista/hooks'
+  autoload :Server,    'barista/server'
+
+  autoload :Extensions, 'barista/extensions'
 
   class << self
+    include Extensions
+
+    # Hook methods
+    #
+    # Hooks are a generic way to define blocks that are executed at run time.
+    # For a full list of hooks, see the readme.
 
     def hooks
       @hooks ||= Hooks.new
@@ -26,58 +37,138 @@ module Barista
       hooks.invoke(name, *args)
     end
     
-    def on_compilation_error(&blk)
-      on_hook :compilation_failed, &blk
-    end
-    
-    def on_compilation(&blk)
-      on_hook :compiled, &blk
-    end
-    
-    def on_compilation_complete(&blk)
-      on_hook :all_compiled, &blk
-    end
+    has_hook_method :on_compilation_error        => :compilation_failed,
+                    :on_compilation              => :compiled,
+                    :on_compilation_complete     => :all_compiled,
+                    :on_compilation_with_warning => :compiled_with_warning,
+                    :before_full_compilation     => :before_full_compilation,
+                    :before_compilation          => :before_compilation
 
-    def on_compilation_with_warning(&blk)
-      on_hook :compiled_with_warning, &blk 
-    end
 
-    def before_full_compilation(&blk)
-      on_hook :before_full_compilation, &blk
-    end
+    # Configuration - Tweak how you use Barista.
     
-    def before_compilation(&blk)
-      on_hook :before_compilation, &blk
-    end
-
     def configure
       yield self if block_given?
     end
-
-    def exception_on_error?
-      @exception_on_error = true if !defined?(@exception_on_error)
-      !!@exception_on_error
+    
+    def env
+      @env ||= default_for_env
     end
 
-    def exception_on_error=(value)
-      @exception_on_error = value
+    def env=(value)
+      @env = value.to_s.strip
+      @env = nil if @env == ''
+    end
+    
+    def logger
+      @logger ||= default_for_logger
+    end
+
+    def logger=(value)
+      @logger = value
+    end
+
+    def app_root
+      @app_root ||= default_for_app_root
+    end
+
+    def app_root=(value)
+      @app_root = value.nil? ? nil : Pathname(value.to_s)
     end
 
     def root
-      @root ||= Rails.root.join("app", "coffeescripts")
+      @root ||= app_root.join("app", "coffeescripts")
     end
 
     def root=(value)
-      @root = Pathname(value.to_s)
+      @root = value.nil? ? nil : Pathname(value.to_s)
       Framework.default_framework = nil
     end
 
     def output_root
-      @output_root ||= Rails.root.join("public", "javascripts")
+      @output_root ||= app_root.join("public", "javascripts")
     end
 
     def output_root=(value)
-      @output_root = Pathname(value.to_s)
+      @output_root = value.nil? ? nil : Pathname(value.to_s)
+    end
+
+    has_boolean_options :verbose, :bare, :add_filter, :add_preamble, :exception_on_error
+
+    def no_wrap?
+      deprecate! self, :no_wrap?, 'Please use bare? instead.'
+      bare?
+    end
+
+    def no_wrap!
+      deprecate! self, :no_wrap!, 'Please use bare! instead.'
+      bare!
+    end
+
+    def no_wrap=(value)
+      deprecate! self, :no_wrap=, 'Please use bare= instead.'
+      self.bare = value
+    end
+
+    delegate :bin_path, :bin_path=, :js_path, :js_path=, :to => Compiler
+
+    [:compiler, :compiler=, :compiler_klass, :compiler_klass=].each do |m|
+      define_method(m) do
+        deprecate! self, m
+        nil
+      end
+    end
+
+    # Default configuration options
+
+    def default_for_env
+      return Rails.env.to_s if defined?(Rails.env)
+      ENV['RAILS_ENV'] || ENV['RACK_ENV'] || 'development'
+    end
+
+    def default_for_app_root
+      if defined?(Rails.root)
+        Rails.root
+      else
+        Pathname(Dir.pwd)
+      end
+    end
+
+    def default_for_logger
+      if defined?(Rails.logger)
+        Rails.logger
+      else
+        require 'logger'
+        Logger.new(STDOUT)
+      end
+    end
+
+    def default_for_verbose
+      %w(test development).include? Barista.env
+    end
+
+    def default_for_add_filter
+      verbose?
+    end
+
+    def default_for_add_preamble
+      verbose?
+    end
+
+    def default_for_exception_on_error
+      true
+    end
+
+    # Actual tasks on the barista module.
+
+    def compile_as(file, type)
+      origin_path, framework = Framework.full_path_for(file)
+      return if origin_path.nil?
+      if type == :coffeescript
+        return File.read(origin_path), File.mtime(origin_path)
+      else
+        return compile_file!(file), Time.now
+      end
     end
 
     def compile_file!(file, force = false, silence_error = false)
@@ -131,63 +222,7 @@ module Barista
     end
 
     def debug(message)
-      Rails.logger.debug "[Barista] #{message}" if defined?(Rails.logger) && Rails.logger
-    end
-    
-    def deprecate!(object, method, other = nil)
-      klass_prefix = object.is_a?(Class) ? "#{object.name}." : "#{object.class.name.method}#"
-      warn "#{klass_prefix}#{method} is deprecated and will be removed in 1.0. #{other}".strip
-    end
-
-    def verbose?
-      @verbose ||= (defined?(Rails) && (Rails.env.test? || Rails.env.development?))
-    end
-    
-    def verbose!
-      self.verbose = true
-    end
-    
-    def verbose=(value)
-      @verbose = !!value
-    end
-
-    alias add_filter? verbose?
-    alias add_preamble? verbose?
-
-    def no_wrap?
-      deprecate! self, :no_wrap?, 'Please use bare? instead.'
-      bare?
-    end
-
-    def no_wrap!
-      deprecate! self, :no_wrap!, 'Please use bare! instead.'
-      bare!
-    end
-
-    def no_wrap=(value)
-      deprecate! self, :no_wrap=, 'Please use bare= instead.'
-      self.bare = value
-    end
-    
-    def bare!
-      self.bare = false
-    end
-    
-    def bare=(value)
-      @bare = !!value
-    end
-    
-    def bare?
-      defined?(@bare) && @bare
-    end 
-
-    delegate :bin_path, :bin_path=, :js_path, :js_path=, :to => Compiler
-    
-    [:compiler, :compiler=, :compiler_klass, :compiler_klass=].each do |m|
-      define_method(m) do
-        deprecate! self, m
-        nil
-      end
+      logger.debug "[Barista] #{message}"
     end
 
   end

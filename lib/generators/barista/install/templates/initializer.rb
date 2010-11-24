@@ -42,19 +42,6 @@ Barista.configure do |c|
   # Or, make sure it is always on
   # c.verbose!
   
-  # Changing the compiler
-  
-  # To use a customer compiler class:
-  # c.compiler_klass = MyAwesomeCompilerClass
-  # c.compiler = :null # Barista::Compilers::Null
-  
-  # To switch between the built in compilers:
-  # c.compiler = :native
-  # or...
-  # c.compiler = :node
-  
-  # The default compiler is auto detected.
-  
   # If you want to use a custom JS file, you can as well
   # e.g. vendoring CoffeeScript in your application:
   # c.js_path = Rails.root.join('public', 'javascripts', 'coffee-script.js')
