@@ -8,7 +8,6 @@ module Barista
   CompilerUnavailableError = Class.new(Error)
 
   autoload :Compiler,  'barista/compiler'
-  autoload :Compilers, 'barista/compilers'
   autoload :Filter,    'barista/filter'
   autoload :Framework, 'barista/framework'
   autoload :Hooks,     'barista/hooks'
@@ -120,8 +119,7 @@ module Barista
 
     def change_output_prefix!(framework, prefix = nil)
       framework = framework.is_a?(Barista::Framework) ? framework : Barista::Framework[framework]
-      return unless framework
-      framework.output_prefix = prefix
+      framework.output_prefix = prefix if framework.present?
     end
 
     def each_framework(include_default = false)
@@ -134,6 +132,11 @@ module Barista
 
     def debug(message)
       Rails.logger.debug "[Barista] #{message}" if defined?(Rails.logger) && Rails.logger
+    end
+    
+    def deprecate!(object, method, other = nil)
+      klass_prefix = object.is_a?(Class) ? "#{object.name}." : "#{object.class.name.method}#"
+      warn "#{klass_prefix}#{method} is deprecated and will be removed in 1.0. #{other}".strip
     end
 
     def verbose?
@@ -152,22 +155,40 @@ module Barista
     alias add_preamble? verbose?
 
     def no_wrap?
-      defined?(@no_wrap) && @no_wrap
+      deprecate! self, :no_wrap?, 'Please use bare? instead.'
+      bare?
     end
-    alias bare? no_wrap?
 
     def no_wrap!
-      self.no_wrap = true
+      deprecate! self, :no_wrap!, 'Please use bare! instead.'
+      bare!
     end
-    alias bare! no_wrap!
 
     def no_wrap=(value)
-      @no_wrap = !!value
+      deprecate! self, :no_wrap=, 'Please use bare= instead.'
+      self.bare = value
     end
-    alias bare= no_wrap= 
+    
+    def bare!
+      self.bare = false
+    end
+    
+    def bare=(value)
+      @bare = !!value
+    end
+    
+    def bare?
+      defined?(@bare) && @bare
+    end 
 
-    delegate :bin_path, :bin_path=, :js_path, :js_path=, :compiler, :compiler=,
-             :compiler_klass, :compiler_klass=, :to => Compiler
+    delegate :bin_path, :bin_path=, :js_path, :js_path=, :to => Compiler
+    
+    [:compiler, :compiler=, :compiler_klass, :compiler_klass=].each do |m|
+      define_method(m) do
+        deprecate! self, m
+        nil
+      end
+    end
 
   end
 
