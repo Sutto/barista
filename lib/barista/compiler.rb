@@ -76,13 +76,6 @@ module Barista
       end
       nil
     end
-<<<<<<< Updated upstream
-
-    def self.dirty?(from, to)
-      compiler_klass.dirty?(from, to)
-    end
-=======
     
->>>>>>> Stashed changes
   end
 end
