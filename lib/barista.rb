@@ -214,8 +214,8 @@ module Barista
     end
 
   end
-
-  if defined?(Rails::Engine)
-  end
+  
+  # Setup integration by default.
+  Integration.setup
 
 end

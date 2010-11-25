@@ -4,7 +4,7 @@ module Barista
       class Railtie < Rails::Railtie
         
         rake_tasks do
-          load Barista.library_root.join('tasks', 'barista.rake').to_s
+          load Barista.library_root.join('barista/tasks/barista.rake').to_s
         end
 
         initializer 'barista.wrap_filter' do
