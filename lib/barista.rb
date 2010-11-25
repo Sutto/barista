@@ -1,5 +1,6 @@
-require 'active_support'
 require 'pathname'
+
+require 'coffee_script'
 
 module Barista
 
@@ -7,13 +8,27 @@ module Barista
   CompilationError         = Class.new(Error)
   CompilerUnavailableError = Class.new(Error)
 
-  autoload :Compiler,  'barista/compiler'
-  autoload :Compilers, 'barista/compilers'
-  autoload :Filter,    'barista/filter'
-  autoload :Framework, 'barista/framework'
-  autoload :Hooks,     'barista/hooks'
+  autoload :Compiler,    'barista/compiler'
+  autoload :Extensions,  'barista/extensions'
+  autoload :Filter,      'barista/filter'
+  autoload :Framework,   'barista/framework'
+  autoload :HamlFilter,  'barista/haml_filter'
+  autoload :Helpers,     'barista/helpers'
+  autoload :Hooks,       'barista/hooks'
+  autoload :Integration, 'barista/integration'
+  autoload :Server,      'barista/server'
 
   class << self
+    include Extensions
+
+    def library_root
+      @library_root ||= Pathname(__FILE__).dirname
+    end
+
+    # Hook methods
+    #
+    # Hooks are a generic way to define blocks that are executed at run time.
+    # For a full list of hooks, see the readme.
 
     def hooks
       @hooks ||= Hooks.new
@@ -27,105 +42,152 @@ module Barista
       hooks.invoke(name, *args)
     end
     
-    def on_compilation_error(&blk)
-      on_hook :compilation_failed, &blk
-    end
-    
-    def on_compilation(&blk)
-      on_hook :compiled, &blk
-    end
-    
-    def on_compilation_complete(&blk)
-      on_hook :all_compiled, &blk
-    end
+    has_hook_method :on_compilation_error        => :compilation_failed,
+                    :on_compilation              => :compiled,
+                    :on_compilation_complete     => :all_compiled,
+                    :on_compilation_with_warning => :compiled_with_warning,
+                    :before_full_compilation     => :before_full_compilation,
+                    :before_compilation          => :before_compilation
 
-    def on_compilation_with_warning(&blk)
-      on_hook :compiled_with_warning, &blk 
-    end
 
-    def before_full_compilation(&blk)
-      on_hook :before_full_compilation, &blk
-    end
+    # Configuration - Tweak how you use Barista.
     
-    def before_compilation(&blk)
-      on_hook :before_compilation, &blk
-    end
-
+    has_boolean_options    :verbose, :bare, :add_filter, :add_preamble, :exception_on_error, :embedded_interpreter    
+    has_delegate_methods   Compiler, :bin_path, :bin_path=, :js_path, :js_path=
+    has_deprecated_methods :compiler, :compiler=, :compiler_klass, :compiler_klass=
+    
     def configure
       yield self if block_given?
     end
-
-    def exception_on_error?
-      @exception_on_error = true if !defined?(@exception_on_error)
-      !!@exception_on_error
+    
+    def env
+      @env ||= default_for_env
     end
 
-    def exception_on_error=(value)
-      @exception_on_error = value
+    def env=(value)
+      @env = value.to_s.strip
+      @env = nil if @env == ''
+    end
+    
+    def logger
+      @logger ||= default_for_logger
+    end
+
+    def logger=(value)
+      @logger = value
+    end
+
+    def app_root
+      @app_root ||= default_for_app_root
+    end
+
+    def app_root=(value)
+      @app_root = value.nil? ? nil : Pathname(value.to_s)
     end
 
     def root
-      @root ||= Rails.root.join("app", "coffeescripts")
+      @root ||= app_root.join("app", "coffeescripts")
     end
 
     def root=(value)
-      @root = Pathname(value.to_s)
+      @root = value.nil? ? nil : Pathname(value.to_s)
       Framework.default_framework = nil
     end
 
     def output_root
-      @output_root ||= Rails.root.join("public", "javascripts")
+      @output_root ||= app_root.join("public", "javascripts")
     end
 
     def output_root=(value)
-      @output_root = Pathname(value.to_s)
+      @output_root = value.nil? ? nil : Pathname(value.to_s)
     end
 
-    def compile_file!(file, force = false, silence_error = false)
-      # Ensure we have a coffeescript compiler available.
-      if !Compiler.check_availability!(silence_error)
-        debug "The coffeescript compiler at '#{Compiler.bin_path}' is currently unavailable."
-        return ""
-      end
-      # Expand the path from the framework.
-      origin_path, framework = Framework.full_path_for(file)
-      return if origin_path.blank?
-      destination_path = self.output_path_for(file)
-      return unless force || Compiler.dirty?(origin_path, destination_path)
-      debug "Compiling #{file} from framework '#{framework.name}'"
-      FileUtils.mkdir_p File.dirname(destination_path)
-      content = Compiler.compile(origin_path, :silence_error => silence_error)
-      # Write the rendered content to file.
-      # nil is only when silence_error is true.
-      if content.nil?
-        debug "An error occured compiling '#{file}' - Leaving file as is."
+    def no_wrap?
+      deprecate! self, :no_wrap?, 'Please use bare? instead.'
+      bare?
+    end
+
+    def no_wrap!
+      deprecate! self, :no_wrap!, 'Please use bare! instead.'
+      bare!
+    end
+
+    def no_wrap=(value)
+      deprecate! self, :no_wrap=, 'Please use bare= instead.'
+      self.bare = value
+    end
+
+    # Default configuration options
+
+    def local_env?
+      %w(test development).include? Barista.env
+    end
+
+    def default_for_env
+      return Rails.env.to_s if defined?(Rails.env)
+      ENV['RAILS_ENV'] || ENV['RACK_ENV'] || 'development'
+    end
+
+    def default_for_app_root
+      if defined?(Rails.root)
+        Rails.root
       else
-        File.open(destination_path, "w+") { |f| f.write content }
-        content
+        Pathname(Dir.pwd)
       end
-    rescue SystemCallError
-      debug "An unknown error occured attempting to compile '#{file}'"
-      ""
+    end
+
+    def default_for_logger
+      if defined?(Rails.logger)
+        Rails.logger
+      else
+        require 'logger'
+        Logger.new(STDOUT)
+      end
+    end
+
+    def default_for_verbose
+      local_env?
+    end
+
+    def default_for_add_filter
+      local_env?
+    end
+
+    def default_for_add_preamble
+      local_env?
+    end
+
+    def default_for_exception_on_error
+      true
+    end
+    
+    def default_for_embedded_interpreter
+      local_env?
+    end
+
+    # Actual tasks on the barista module.
+
+    def compile_file!(file, force = false, silence_error = false)
+      Compiler.autocompile_file file, force, silence_error
     end
 
     def compile_all!(force = false, silence_error = true)
       debug "Compiling all coffeescripts"
       Barista.invoke_hook :before_full_compilation
       Framework.exposed_coffeescripts.each do |coffeescript|
-        compile_file! coffeescript, force, silence_error
+        Compiler.autocompile_file coffeescript, force, silence_error
       end
       Barista.invoke_hook :all_compiled
       true
     end
 
     def change_output_prefix!(framework, prefix = nil)
-      framework = framework.is_a?(Barista::Framework) ? framework : Barista::Framework[framework]
-      return unless framework
-      framework.output_prefix = prefix
+      framework = Barista::Framework[framework] unless framework.is_a?(Barista::Framework)
+      framework.output_prefix = prefix if framework.present?
     end
 
-    def each_framework(include_default = false)
-      Framework.all(include_default).each { |f| yield f if block_given? }
+    def each_framework(include_default = false, &blk)
+      Framework.all(include_default).each(&blk)
     end
 
     def output_path_for(file)
@@ -133,56 +195,17 @@ module Barista
     end
 
     def debug(message)
-      Rails.logger.debug "[Barista] #{message}" if defined?(Rails.logger) && Rails.logger
-    end
-
-    def verbose?
-      @verbose ||= (defined?(Rails) && (Rails.env.test? || Rails.env.development?))
+      logger.debug "[Barista] #{message}"
     end
     
-    def verbose!
-      self.verbose = true
+    def setup_defaults
+      Barista::HamlFilter.setup
+      Barista::Compiler.setup_default_error_logger
     end
-    
-    def verbose=(value)
-      @verbose = !!value
-    end
-
-    alias add_filter? verbose?
-    alias add_preamble? verbose?
-
-    def no_wrap?
-      defined?(@no_wrap) && @no_wrap
-    end
-    alias bare? no_wrap?
-
-    def no_wrap!
-      self.no_wrap = true
-    end
-    alias bare! no_wrap!
-
-    def no_wrap=(value)
-      @no_wrap = !!value
-    end
-    alias bare= no_wrap= 
-
-    delegate :bin_path, :bin_path=, :js_path, :js_path=, :compiler, :compiler=,
-             :compiler_klass, :compiler_klass=, :to => Compiler
 
   end
-
-  if defined?(Rails::Engine)
-    class Engine < Rails::Engine
-
-      rake_tasks do
-        load File.expand_path('./barista/tasks/barista.rake', File.dirname(__FILE__))
-      end
-
-      initializer "barista.wrap_filter" do
-        ActionController::Base.before_filter(Barista::Filter) if Barista.add_filter?
-      end
-
-    end
-  end
+  
+  # Setup integration by default.
+  Integration.setup
 
 end

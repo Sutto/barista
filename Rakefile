@@ -7,19 +7,12 @@ begin
   require 'jeweler'
   Jeweler::Tasks.new do |gem|
     gem.name        = "barista"
-    gem.summary     = %Q{Transparent coffeescript support for rails 3.}
-    gem.description = %Q{Automatically compiles app/coffeescripts/*.coffee to javascript for rails awesomesauce.}
+    gem.summary     = %Q{Simple, transparent coffeescript integration for Rails and Rack applications.}
+    gem.description = File.read(File.expand_path('DESCRIPTION', File.dirname(__FILE__)))
     gem.email       = "sutto@sutto.net"
     gem.homepage    = "http://github.com/Sutto/barista"
     gem.version     = Barista::Version::STRING
     gem.authors     = ["Darcy Laycock"]
-    gem.add_dependency 'open4'
-    gem.add_dependency 'railties', '~> 3.0'
-    
-    gem.add_development_dependency 'rspec', '~> 2.0.0.beta.22'
-    gem.add_development_dependency 'rr', '~> 1.0'
-    gem.add_development_dependency 'therubyracer'
-    
   end
   Jeweler::GemcutterTasks.new
 rescue LoadError
@@ -28,8 +21,7 @@ end
 
 require 'rake/rdoctask'
 Rake::RDocTask.new do |rdoc|
-  version = File.exist?('VERSION') ? File.read('VERSION') : ""
-
+  version = Barista::Version::STRING
   rdoc.rdoc_dir = 'rdoc'
   rdoc.title = "barista #{version}"
   rdoc.rdoc_files.include('README*')

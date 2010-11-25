@@ -1,9 +1,19 @@
 module Barista
   class Filter
 
-    def self.filter(controller)
-      Rails.logger.debug "[Barista] Compiling all scripts"
+    def initialize(app)
+      @app = app
+    end
+
+    def call(env)
+      dup._call(env)
+    end
+
+    def _call(env)
+      Barista.debug 'Compiling all scripts for barista'
       Barista.compile_all!
+      # Now, actually call the app.
+      @app.call env
     end
 
   end
