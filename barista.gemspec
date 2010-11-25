@@ -5,12 +5,18 @@
 
 Gem::Specification.new do |s|
   s.name = %q{barista}
-  s.version = "0.6.1"
+  s.version = "0.7.0.pre"
 
-  s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
+  s.required_rubygems_version = Gem::Requirement.new("> 1.3.1") if s.respond_to? :required_rubygems_version=
   s.authors = ["Darcy Laycock"]
-  s.date = %q{2010-11-24}
-  s.description = %q{Automatically compiles app/coffeescripts/*.coffee to javascript for rails and rack awesomesauce.}
+  s.date = %q{2010-11-25}
+  s.description = %q{Barista provides simple, integrated support for CoffeeScript in Rack and Rails applications.
+
+Much like Compass does for Sass, It also provides Frameworks (bundleable code which can be shared via Gems).
+
+Lastly, it also provides a Rack Application (which can be used to server compiled code), a around_filter-style precompiler (as Rack middleware) and simple helpers for rails and Haml.
+
+For more details, please see the the README file bundled with it.}
   s.email = %q{sutto@sutto.net}
   s.extra_rdoc_files = [
     "LICENSE",
@@ -21,19 +27,23 @@ Gem::Specification.new do |s|
      ".gitignore",
      ".rspec",
      ".rvmrc",
+     "DESCRIPTION",
      "Gemfile",
      "Gemfile.lock",
      "LICENSE",
      "README.md",
      "Rakefile",
-     "app/controllers/barista_controller.rb",
      "barista.gemspec",
      "config/routes.rb",
      "lib/barista.rb",
      "lib/barista/compiler.rb",
+     "lib/barista/extensions.rb",
      "lib/barista/filter.rb",
      "lib/barista/framework.rb",
+     "lib/barista/haml_filter.rb",
+     "lib/barista/helpers.rb",
      "lib/barista/hooks.rb",
+     "lib/barista/server.rb",
      "lib/barista/tasks/barista.rake",
      "lib/barista/version.rb",
      "lib/generators/barista/install/USAGE",
@@ -47,7 +57,7 @@ Gem::Specification.new do |s|
   s.rdoc_options = ["--charset=UTF-8"]
   s.require_paths = ["lib"]
   s.rubygems_version = %q{1.3.7}
-  s.summary = %q{Transparent coffeescript support for rails 3.}
+  s.summary = %q{Simple, transparent coffeescript for Rails and Rack applications.}
   s.test_files = [
     "spec/barista_spec.rb",
      "spec/spec_helper.rb"
@@ -58,16 +68,16 @@ Gem::Specification.new do |s|
     s.specification_version = 3
 
     if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0') then
-      s.add_runtime_dependency(%q<coffee-script>, ["~> 2.1"])
+      s.add_runtime_dependency(%q<coffee-script>, ["~> 2.1.1"])
       s.add_development_dependency(%q<rspec>, ["~> 2.0.0.beta.22"])
       s.add_development_dependency(%q<rr>, ["~> 1.0"])
     else
-      s.add_dependency(%q<coffee-script>, ["~> 2.1"])
+      s.add_dependency(%q<coffee-script>, ["~> 2.1.1"])
       s.add_dependency(%q<rspec>, ["~> 2.0.0.beta.22"])
       s.add_dependency(%q<rr>, ["~> 1.0"])
     end
   else
-    s.add_dependency(%q<coffee-script>, ["~> 2.1"])
+    s.add_dependency(%q<coffee-script>, ["~> 2.1.1"])
     s.add_dependency(%q<rspec>, ["~> 2.0.0.beta.22"])
     s.add_dependency(%q<rr>, ["~> 1.0"])
   end

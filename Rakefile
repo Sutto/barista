@@ -8,7 +8,7 @@ begin
   Jeweler::Tasks.new do |gem|
     gem.name        = "barista"
     gem.summary     = %Q{Simple, transparent coffeescript for Rails and Rack applications.}
-    gem.description = File.read(File.expand_path('DESCRIPTION'), File.dirname(__FILE__))
+    gem.description = File.read(File.expand_path('DESCRIPTION', File.dirname(__FILE__)))
     gem.email       = "sutto@sutto.net"
     gem.homepage    = "http://github.com/Sutto/barista"
     gem.version     = Barista::Version::STRING
