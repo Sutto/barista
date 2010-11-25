@@ -46,7 +46,7 @@ module Barista
         end
         # Expand the path from the framework.
         origin_path, framework = Framework.full_path_for(file)
-        return if origin_path.blank?
+        return if origin_path.nil?
         destination_path = framework.output_path_for(file)
         return unless force || dirty?(origin_path, destination_path)
         debug "Compiling #{file} from framework '#{framework.name}'"

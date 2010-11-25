@@ -1,4 +1,3 @@
-require 'active_support'
 require 'pathname'
 
 require 'coffee_script'
@@ -9,17 +8,22 @@ module Barista
   CompilationError         = Class.new(Error)
   CompilerUnavailableError = Class.new(Error)
 
-  autoload :Compiler,   'barista/compiler'
-  autoload :Filter,     'barista/filter'
-  autoload :Framework,  'barista/framework'
-  autoload :Hooks,      'barista/hooks'
-  autoload :Server,     'barista/server'
-  autoload :HamlFilter, 'barista/haml_filter'
-  autoload :Helpers,    'barista/helpers'
-  autoload :Extensions, 'barista/extensions'
+  autoload :Compiler,    'barista/compiler'
+  autoload :Extensions,  'barista/extensions'
+  autoload :Filter,      'barista/filter'
+  autoload :Framework,   'barista/framework'
+  autoload :HamlFilter,  'barista/haml_filter'
+  autoload :Helpers,     'barista/helpers'
+  autoload :Hooks,       'barista/hooks'
+  autoload :Integration, 'barista/integration'
+  autoload :Server,      'barista/server'
 
   class << self
     include Extensions
+
+    def library_root
+      @library_root ||= Pathname(__FILE__).dirname
+    end
 
     # Hook methods
     #
@@ -203,33 +207,15 @@ module Barista
     def debug(message)
       logger.debug "[Barista] #{message}"
     end
+    
+    def setup_defaults!
+      Barista::HamlFilter.setup!
+      Barista::Compiler.setup_default_error_logger!
+    end
 
   end
 
   if defined?(Rails::Engine)
-    class Engine < Rails::Engine
-
-      rake_tasks do
-        load File.expand_path('./barista/tasks/barista.rake', File.dirname(__FILE__))
-      end
-
-      initializer 'barista.wrap_filter' do
-        config.app_middleware.use Barista::Filter if Barista.add_filter?
-      end
-      
-      initializer 'barista.error_messages' do
-        Barista::Compiler.setup_default_error_logger!
-      end
-      
-      initializer 'barista.haml_filter' do
-        Barista::HamlFilter.setup!
-      end
-
-      initializer 'barista.helpers' do
-        ActionController::Base.helper Barista::Helpers
-      end
-
-    end
   end
 
 end
