@@ -5,16 +5,21 @@ module Barista
 
     # TODO: Deprecate.
     class << self
-      attr_accessor :bin_path, :js_path
+
+      def js_path
+        CoffeeScript::Source.path
+      end
+
+      def js_path=(value)
+        CoffeeScript::Source.path = value
+      end
       
       def bin_path
-        Barista.deprecate! self, :bin_path
-        nil
+        CoffeeScript::Engines::Node.binary
       end
       
       def bin_path=(path)
-        Barista.deprecate! self, :bin_path=
-        # Do nothing currently.
+        CoffeeScript::Engines::Node.binary = path
       end
       
       def available?

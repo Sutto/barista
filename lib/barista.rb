@@ -111,7 +111,7 @@ module Barista
       self.bare = value
     end
 
-    delegate :bin_path, :bin_path=, :js_path, :js_path=, :to => Compiler
+    has_delegate_methods Compiler, :bin_path, :bin_path=, :js_path, :js_path=
 
     [:compiler, :compiler=, :compiler_klass, :compiler_klass=].each do |m|
       define_method(m) do

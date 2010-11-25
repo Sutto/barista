@@ -11,8 +11,9 @@ module Barista
     module ClassMethods
       
       def has_boolean_options(*names)
+        source = []
         names.each do |name|
-          class_eval(<<-EOM, __FILE__, __LINE__)
+          source << <<-EOM
             
             def #{name}!
               @#{name} = true
@@ -32,16 +33,33 @@ module Barista
             
           EOM
         end
+        class_eval source.join("\n"), __FILE__, __LINE__
       end
       
       def has_hook_method(options)
+        source = []
         options.each_pair do |name, event|
-          class_eval(<<-EOM, __FILE__, __LINE__)
+          source << <<-EOM
             def #{name}(&blk)
               on_hook #{event.to_sym.inspect}, &blk
             end
           EOM
         end
+        class_eval source.join("\n"), __FILE__, __LINE__
+      end
+
+      def has_delegate_methods(delegate, *args)
+        source = []
+        args.each do |method|
+          source << <<-EOM
+
+            def #{method}(*args, &blk)
+              #{delegate}.send(:#{method}, *args, &blk)
+            end
+
+          EOM
+        end
+        class_eval source.join("\n"), __FILE__, __LINE__
       end
       
     end
