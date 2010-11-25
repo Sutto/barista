@@ -7,13 +7,13 @@ begin
   require 'jeweler'
   Jeweler::Tasks.new do |gem|
     gem.name        = "barista"
-    gem.summary     = %Q{Transparent coffeescript support for rails 3.}
-    gem.description = %Q{Automatically compiles app/coffeescripts/*.coffee to javascript for rails and rack awesomesauce.}
+    gem.summary     = %Q{Simple, transparent coffeescript for Rails and Rack applications.}
+    gem.description = File.read(File.expand_path('DESCRIPTION'), File.dirname(__FILE__))
     gem.email       = "sutto@sutto.net"
     gem.homepage    = "http://github.com/Sutto/barista"
     gem.version     = Barista::Version::STRING
     gem.authors     = ["Darcy Laycock"]
-    gem.add_dependency 'coffee-script', '~> 2.1'
+    gem.add_dependency 'coffee-script', '~> 2.1.1'
     
     gem.add_development_dependency 'rspec', '~> 2.0.0.beta.22'
     gem.add_development_dependency 'rr', '~> 1.0'

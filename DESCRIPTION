@@ -1,0 +1,7 @@
+Barista provides simple, integrated support for CoffeeScript in Rack and Rails applications.
+
+Much like Compass does for Sass, It also provides Frameworks (bundleable code which can be shared via Gems).
+
+Lastly, it also provides a Rack Application (which can be used to server compiled code), a around_filter-style precompiler (as Rack middleware) and simple helpers for rails and Haml.
+
+For more details, please see the the README file bundled with it.

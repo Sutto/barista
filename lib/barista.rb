@@ -48,6 +48,10 @@ module Barista
 
     # Configuration - Tweak how you use Barista.
     
+    has_boolean_options    :verbose, :bare, :add_filter, :add_preamble, :exception_on_error, :embedded_interpreter    
+    has_delegate_methods   Compiler, :bin_path, :bin_path=, :js_path, :js_path=
+    has_deprecated_methods :compiler, :compiler=, :compiler_klass, :compiler_klass=
+    
     def configure
       yield self if block_given?
     end
@@ -94,8 +98,6 @@ module Barista
       @output_root = value.nil? ? nil : Pathname(value.to_s)
     end
 
-    has_boolean_options :verbose, :bare, :add_filter, :add_preamble, :exception_on_error, :embedded_interpreter
-
     def no_wrap?
       deprecate! self, :no_wrap?, 'Please use bare? instead.'
       bare?
@@ -109,15 +111,6 @@ module Barista
     def no_wrap=(value)
       deprecate! self, :no_wrap=, 'Please use bare= instead.'
       self.bare = value
-    end
-
-    has_delegate_methods Compiler, :bin_path, :bin_path=, :js_path, :js_path=
-
-    [:compiler, :compiler=, :compiler_klass, :compiler_klass=].each do |m|
-      define_method(m) do
-        deprecate! self, m
-        nil
-      end
     end
 
     # Default configuration options

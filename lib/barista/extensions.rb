@@ -62,6 +62,21 @@ module Barista
         class_eval source.join("\n"), __FILE__, __LINE__
       end
       
+      def has_deprecated_methods(*args)
+        source = []
+        args.each do |method|
+          source << <<-EOM
+
+            def #{method}(*args, &blk)
+              Barista.deprecate!(self, :#{method})
+              nil
+            end
+
+          EOM
+        end
+        class_eval source.join("\n"), __FILE__, __LINE__
+      end
+      
     end
     
     module InstanceMethods
