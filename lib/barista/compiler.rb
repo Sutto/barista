@@ -82,7 +82,7 @@ module Barista
     protected
 
     def preamble(location)
-      "/* DO NOT MODIFY. This file was compiled from:\n * #{location}\n * Compiled #{Time.now.httpdate}\n*/\n\n"
+      "/* DO NOT MODIFY. This file was compiled #{Time.now.httpdate} from\n * #{location.strip}\n */\n\n"
     end
         
     def compilation_error_for(location, message)

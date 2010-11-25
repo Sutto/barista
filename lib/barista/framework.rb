@@ -20,6 +20,10 @@ module Barista
         collection + fw.exposed_coffeescripts
       end.uniq.sort_by { |f| f.length }
     end
+    
+    def self.coffeescript_glob_paths
+      all(true).map { |fw| fw.coffeescript_glob_path }
+    end
 
     def self.full_path_for(script)
       script = script.to_s.gsub(/\.js$/, '.coffee').gsub(/^\/+/, '')
@@ -48,7 +52,11 @@ module Barista
     end
 
     def coffeescripts
-      Dir[File.join(@framework_root, "**", "*.coffee")]
+      Dir[coffeescript_glob_path]
+    end
+    
+    def coffeescript_glob_path
+      @coffeescript_glob_path ||= File.join(@framework_root, "**", "*.coffee")
     end
 
     def short_name(script)
