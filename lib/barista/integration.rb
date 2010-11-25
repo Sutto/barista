@@ -12,7 +12,10 @@ module Barista
     def self.setup_rails
       case Rails::VERSION::MAJOR
       when 3
-        require 'barista/integration/rails3'
+        Rails3
+      when 2
+        # We need to manually call the initialiser stuff in Rails 2.
+        Rails2.setup
       end
     end
     
