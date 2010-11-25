@@ -1,6 +1,7 @@
 module Barista
   module Integration
     
+    autoload :Rails2,  'barista/integration/rails2'
     autoload :Rails3,  'barista/integration/rails3'
     autoload :Sinatra, 'barista/integration/sinatra'
     
