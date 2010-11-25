@@ -1,27 +1,38 @@
 PATH
   remote: .
   specs:
-    barista (0.5.1)
-      open4
+    barista (0.7.0.pre)
+      coffee-script (~> 2.1.1)
 
 GEM
   remote: http://rubygems.org/
   specs:
-    gemcutter (0.6.1)
+    coffee-script (2.1.1)
+      coffee-script-source
+    coffee-script-source (0.9.5)
+    diff-lcs (1.1.2)
     git (1.2.5)
-    jeweler (1.4.0)
-      gemcutter (>= 0.1.0)
+    jeweler (1.5.1)
+      bundler (~> 1.0.0)
       git (>= 1.2.5)
-      rubyforge (>= 2.0.0)
-    json_pure (1.4.6)
-    open4 (1.0.1)
-    rubyforge (2.0.4)
-      json_pure (>= 1.1.7)
+      rake
+    rake (0.8.7)
+    rr (1.0.2)
+    rspec (2.1.0)
+      rspec-core (~> 2.1.0)
+      rspec-expectations (~> 2.1.0)
+      rspec-mocks (~> 2.1.0)
+    rspec-core (2.1.0)
+    rspec-expectations (2.1.0)
+      diff-lcs (~> 1.1.2)
+    rspec-mocks (2.1.0)
 
 PLATFORMS
   ruby
 
 DEPENDENCIES
   barista!
-  jeweler
-  open4
+  coffee-script (~> 2.1.1)
+  jeweler (~> 1.0)
+  rr (~> 1.0)
+  rspec (~> 2.1)
