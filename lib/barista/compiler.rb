@@ -34,8 +34,26 @@ module Barista
         available
       end
 
-      def compile(path, options = {})
-        self.new(path, options).to_js
+      def compile(content, options = {})
+        self.new(content, options).to_js
+      end
+
+      def autocompile_file(file, force = false, silence_error = false)
+        # Ensure we have a coffeescript compiler available.
+        if !check_availability!(silence_error)
+          debug "The coffeescript compiler at '#{Compiler.bin_path}' is currently unavailable."
+          return nil
+        end
+        # Expand the path from the framework.
+        origin_path, framework = Framework.full_path_for(file)
+        return if origin_path.blank?
+        destination_path = framework.output_path_for(file)
+        return unless force || dirty?(origin_path, destination_path)
+        debug "Compiling #{file} from framework '#{framework.name}'"
+        compiler = new(origin_path, :silence_error => silence_error, :output_path => destination_path)
+        content = compiler.to_js
+        compiler.save
+
       end
       
       def dirty?(from, to)
@@ -82,6 +100,15 @@ module Barista
         raise CompilationError, "CoffeeScript encountered an error compiling #{where}: #{e.message}"
       end
       compilation_error_for where, e.message
+    end
+
+    def save(path = @options[:output_path])
+      return false unless path.is_a?(String) && !to_js.nil?
+      FileUtils.mkdir_p File.dirname(path)
+      File.open(path, "w+") { |f| f.write @compiled_content }
+      true
+    rescue Errno::EACCES
+      false
     end
 
     protected
