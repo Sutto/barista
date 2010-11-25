@@ -30,9 +30,9 @@ module Barista
       def call(env)
         result = @server.call(env)
         if result[0] == 404
-          @app.call(env)
+          @app.call(env).tap { |i| p i }
         else
-          result
+          result.tap { |i| p i }
         end
       end
       
@@ -64,7 +64,7 @@ module Barista
       @result_type = EXTENSION_MAPPING[File.extname(@path_info)]
       return not_found if @result_type.nil? || (@result_type == :coffeescript && !Barista.embedded_interpreter?)
       # Process the difference in content type.
-      content, last_modified = Barista.compile_as(@path_info, @result_type)
+      content, last_modified = Barista::Compiler.compile_as(@path_info, @result_type)
       if content.nil?
         not_found
       else

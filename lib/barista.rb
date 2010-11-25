@@ -167,16 +167,6 @@ module Barista
 
     # Actual tasks on the barista module.
 
-    def compile_as(file, type)
-      origin_path, framework = Framework.full_path_for(file)
-      return if origin_path.nil?
-      if type == :coffeescript
-        return File.read(origin_path), File.mtime(origin_path)
-      else
-        return Compiler.autocompile_file(file), Time.now
-      end
-    end
-
     def compile_file!(file, force = false, silence_error = false)
       Compiler.autocompile_file file, force, silence_error
     end

@@ -41,19 +41,29 @@ module Barista
       def autocompile_file(file, force = false, silence_error = false)
         # Ensure we have a coffeescript compiler available.
         if !check_availability!(silence_error)
-          debug "The coffeescript compiler at '#{Compiler.bin_path}' is currently unavailable."
+          Barista.debug "The coffeescript compiler at '#{Compiler.bin_path}' is currently unavailable."
           return nil
         end
         # Expand the path from the framework.
         origin_path, framework = Framework.full_path_for(file)
         return if origin_path.nil?
         destination_path = framework.output_path_for(file)
-        return unless force || dirty?(origin_path, destination_path)
-        debug "Compiling #{file} from framework '#{framework.name}'"
+        return File.read(destination_path) unless dirty?(origin_path, destination_path) || force
+        Barista.debug "Compiling #{file} from framework '#{framework.name}'"
         compiler = new(origin_path, :silence_error => silence_error, :output_path => destination_path)
         content = compiler.to_js
         compiler.save
-
+        content
+      end
+      
+      def compile_as(file, type)
+        origin_path, framework = Framework.full_path_for(file)
+        return if origin_path.nil?
+        if type == :coffeescript
+          return File.read(origin_path), File.mtime(origin_path)
+        else
+          return autocompile_file(file), Time.now
+        end
       end
       
       def dirty?(from, to)
@@ -73,7 +83,7 @@ module Barista
     
     def initialize(context, options = {})
       @compiled = false
-      @options  = {}
+      @options  = options
       setup_compiler_context context
     end
 
@@ -106,6 +116,7 @@ module Barista
       return false unless path.is_a?(String) && !to_js.nil?
       FileUtils.mkdir_p File.dirname(path)
       File.open(path, "w+") { |f| f.write @compiled_content }
+      puts 'Saved to ' + path
       true
     rescue Errno::EACCES
       false
