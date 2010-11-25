@@ -30,9 +30,9 @@ module Barista
       def call(env)
         result = @server.call(env)
         if result[0] == 404
-          @app.call(env).tap { |i| p i }
+          @app.call(env)
         else
-          result.tap { |i| p i }
+          result
         end
       end
       
