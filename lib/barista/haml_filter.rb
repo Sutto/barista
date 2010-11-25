@@ -33,7 +33,7 @@ module Barista
         
     end
     
-    def self.setup!
+    def self.setup
       if defined?(Haml)
         CoffeeScript.module_eval { include Haml::Filters::Base }
       end

@@ -208,9 +208,9 @@ module Barista
       logger.debug "[Barista] #{message}"
     end
     
-    def setup_defaults!
-      Barista::HamlFilter.setup!
-      Barista::Compiler.setup_default_error_logger!
+    def setup_defaults
+      Barista::HamlFilter.setup
+      Barista::Compiler.setup_default_error_logger
     end
 
   end

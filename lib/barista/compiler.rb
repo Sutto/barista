@@ -60,7 +60,7 @@ module Barista
         File.exist?(from) && (!File.exist?(to) || File.mtime(to) < File.mtime(from))
       end
       
-      def setup_default_error_logger!
+      def setup_default_error_logger
         Barista.on_compilation_error do |where, message|
           if Barista.verbose?
             Barista.debug "There was an error compiling coffeescript from #{where}:"

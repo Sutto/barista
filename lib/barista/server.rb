@@ -19,6 +19,24 @@ module Barista
       :coffeescript => COFFEE_CONTENT_TYPE,
       :javascript   => JS_CONTENT_TYPE
     }
+    
+    class Proxy
+      
+      def initialize(app)
+        @app = app
+        @server = Server.new
+      end
+      
+      def call(env)
+        result = @server.call(env)
+        if result[0] == 404
+          @app.call(env)
+        else
+          result
+        end
+      end
+      
+    end
 
     def initialize
       # Cache the responses for common errors.
@@ -44,7 +62,7 @@ module Barista
       end
       # Look up the type of the file based off of the extension.
       @result_type = EXTENSION_MAPPING[File.extname(@path_info)]
-      return not_found if @result_type.nil?
+      return not_found if @result_type.nil? || (@result_type == :coffeescript && !Barista.embedded_interpreter?)
       # Process the difference in content type.
       content, last_modified = Barista.compile_as(@path_info, @result_type)
       if content.nil?
