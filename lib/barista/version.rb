@@ -3,6 +3,6 @@ module Barista
     MAJOR  = 0
     MINOR  = 7
     PATCH  = 0
-    STRING = [MAJOR, MINOR, PATCH, 'pre'].join(".")
+    STRING = [MAJOR, MINOR, PATCH, 'pre2'].join(".")
   end
 end
