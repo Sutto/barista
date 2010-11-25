@@ -116,7 +116,6 @@ module Barista
       return false unless path.is_a?(String) && !to_js.nil?
       FileUtils.mkdir_p File.dirname(path)
       File.open(path, "w+") { |f| f.write @compiled_content }
-      puts 'Saved to ' + path
       true
     rescue Errno::EACCES
       false
