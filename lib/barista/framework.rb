@@ -2,7 +2,7 @@ module Barista
   class Framework
 
     def self.default_framework
-      @default_framework ||= self.new("default", Barista.root)
+      @default_framework ||= self.new(:name => "default", :root => Barista.root)
     end
 
     def self.default_framework=(value)
