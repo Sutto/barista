@@ -107,7 +107,7 @@ module Barista
     rescue CoffeeScript::Error => e
       Barista.invoke_hook :compilation_failed, where, e.message
       if Barista.exception_on_error? && !@options[:silence]
-        raise CompilationError, "CoffeeScript encountered an error compiling #{where}: #{e.message}"
+        raise CompilationError, err.sub(/\n.*/m, '')
       end
       compilation_error_for where, e.message
     end
