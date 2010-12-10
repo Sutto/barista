@@ -90,7 +90,7 @@ module Barista
     def compile!
       location          = @options.fetch(:origin, 'inline')
       @compiled_content = compile(@context, location)
-      @compiled_content = preamble(location) + @compiled_content if Barista.add_preamble? unless location == 'inline'
+      @compiled_content = preamble(location) + @compiled_content if location != 'inline' && Barista.add_preamble?
       @compiled         = true
     end
 
