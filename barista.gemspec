@@ -25,7 +25,6 @@ For more details, please see the the README file bundled with it.}
   s.files = [
     ".document",
     ".rspec",
-    ".rvmrc",
     "DESCRIPTION",
     "Gemfile",
     "Gemfile.lock",
