@@ -28,12 +28,11 @@ Barista transparently compiles CoffeeScript to JavaScript - When a `.coffee` fil
 Barista supports using `therubyracer` when installed or, by default, using either the `node` executable or `jsc` (on OSX) to compile your scripts. There is
 no need for you to install the coffee script executable in node - having Node itself or any of the alternatives available is enough for you to get support.
 
-## Alternative
+When you want to deploy, you can simple run `rake barista:brew` to force the compilation of all JavaScripts fro the current application.
 
-Barista started out as a very-closed alternative to [bistro\_car](http://github.com/jnicklas/bistro_car). Since then, it's evolved
-an awful lot. These days, Barista includes
+## General Info
 
-That is, `app/coffeescripts/demo.coffee` will work for `/javascripts/demo.js`. Even better (and more importantly
+As an example of what's possible, `app/coffeescripts/demo.coffee` will work for `/javascripts/demo.js`. Even better (and more importantly
 for me), it provides `Barista.compile_all!` which takes all coffee files and compiles them into `public/javascripts`.
 
 If you're using Jammit, this means you can simple run a rake task (`rake barista:brew` before running jammit) and
@@ -52,6 +51,39 @@ automatically compile all coffeescripts that have changed before rendering the p
 
 Barista works out of the box with Rails 3 (and theoretically, Rails 2) - with support for Rack if
 you're willing to set it up manually.
+
+## Configuration ##
+
+Please note that barista lets you configure several options. To do this,
+it's as simple as setting up an initializer with:
+
+    rails generate barista:install
+    
+Then editing `config/initializers/barista_config.rb`. The options available are:
+
+### Boolean Options
+
+All of these come in the form of `#option?` (to check it's status), `#option=(value)` (to set it)
+and `#option!` (to set the value to true):
+
+* `verbose` - Output debugging error messages. (Defaults to true in test / dev)
+* `bare` - Don't wrap the compiled JS in a Closure
+* `add_filter` - Automatically add an around filter for processing changes. (Defaults to true in test / dev)
+* `add_preamble` - Add a time + path preamble to compiled JS. (Defaults to true in test / dev)
+* `exception_on_error` - Raise an exception on compilation errors (defaults to true)
+* `embedded_interpreter` - Embeds coffeescript + link to coffee file instead of compiling for include tags and haml filters. (Defaults to true in test / dev)
+
+### Path options
+
+* `root` - the folder path to read coffeescripts from, defaults to app/coffeescripts
+* `output_root` - the folder to write them into, defaults to public/javascripts.
+* `change_output_prefix!` - method to change the output prefix for a framework.
+* `verbose` - whether or not barista will add a preamble to files.
+* `js_path` - Path to the pure-javascript compiler.
+* `env` - The application environment. (defaults to Rails.env)
+* `app_root` - The root of the application.
+* `bin_path` - The path to the `node` executable if non-standard and not using therubyracer.
+* All of the hook methods mentioned below.
 
 ## Frameworks ##
 
@@ -106,27 +138,6 @@ An excellent example of these hooks in use is [barista\_growl](http://github.com
 by Trevor Burnham - a gem perfect for development purposes that automatically shows growl messages
 on compilation.
 
-## Configuration ##
-
-Please note that barista lets you configure several options. To do this,
-it's as simple as setting up an initializer with:
-
-    rails generate barista:install
-    
-Then editing `config/initializers/barista_config.rb`.
-
-Currently available options are:
-
-* `root` - the folder path to read coffeescripts from, defaults to app/coffeescripts
-* `output_root` - the folder to write them into, defaults to public/javascripts.
-* `no_wrap` and `bare` - stop coffee from automatically wrapping JS in a closure.
-* `change_output_prefix!` - method to change the output prefix for a framework.
-* All of the hooks mentioned above.
-* `verbose` - whether or not barista will add a preamble to files.
-* `compiler` - One of `:native` or `:node`, to force the compiler version.
-* `compiler_klass` - A custom compiler class.
-* `js_path` - Path to the pure-javascript compiler 
-
 # Contributors / Credits
 
 The following people have all contributed to Barista:
@@ -137,12 +148,14 @@ The following people have all contributed to Barista:
 * [Trevor Burnham](https://github.com/TrevorBurnham) - Misc. documentation tweaks and hooks idea.
 * [Sean McCullough](https://github.com/mcculloughsean) - Initial switch to support bare (vs. no\_wrap)
 * [Ben Atkin](https://github.com/benatkin) - Docs work.
+* [Ben Hoskings](https://github.com/benhoskings) Misc fixes, added preamble support.
 
-Barista was originally heavily inspired by [Bistro Car](https://github.com/jnicklas/bistro_car), but taking a fundamentally
+Barista was originally heavily inspired by [Bistro Car](https://github.com/jnicklas/bistro_car), but has taken a few fundamentally
 different approach in a few areas.
 
-The Native JavaScript compiler was heavily inspired by and based on [Sam Stephenson's](https://github.com/sstephenson) fork of
-the ruby-coffee-script gem. All credit for the idea goes to him and the code is based on his simple approach.
+Barista builds upon the awesome [coffee-script](https://github.com/josh/ruby-coffee-script) gem.
+
+It's all possible thanks to [CoffeeScript](https://github.com/jashkenas/coffee-script) by Jeremy Ashkenas.
 
 ## Note on Patches/Pull Requests ##
  
