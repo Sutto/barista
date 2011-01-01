@@ -1,8 +1,8 @@
 module Barista
   module Version
-    MAJOR  = 0
-    MINOR  = 7
+    MAJOR  = 1
+    MINOR  = 0
     PATCH  = 0
-    STRING = [MAJOR, MINOR, PATCH, 'pre3'].join(".")
+    STRING = [MAJOR, MINOR, PATCH].join(".")
   end
 end
