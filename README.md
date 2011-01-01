@@ -30,13 +30,14 @@ no need for you to install the coffee script executable in node - having Node it
 
 When you want to deploy, you can simple run `rake barista:brew` to force the compilation of all JavaScripts fro the current application.
 
-## General Info
+## In Practice
 
-As an example of what's possible, `app/coffeescripts/demo.coffee` will work for `/javascripts/demo.js`. Even better (and more importantly
-for me), it provides `Barista.compile_all!` which takes all coffee files and compiles them into `public/javascripts`.
+Barista not only supports compiling all JavaScripts on demand (via `rake barista:brew` as above, or `Barista.compile_all!`) but it
+also ships with a simple Rack server app that will compile on demand for platforms such as Heroku, meaning you don't need write access
+(although it is helpful).
 
-If you're using Jammit, this means you can simple run a rake task (`rake barista:brew` before running jammit) and
-your coffeescripts will be automatically provided, ready for bundling.
+If you're using Jammit, the precompilation phase (e.g. `rake barista:brew` before running jammit) will make it possible for your application
+to automatically bundle not only normal JavaScripts but also your CoffeeScripts.
 
 To add to your project, simply add:
 
@@ -44,13 +45,12 @@ To add to your project, simply add:
     
 To your Gemfile and run bundle install.
 
-As you place .coffee files in app/coffeescripts, it will automatically handle them for you.
-
-Please note that for Jammit compatibility etc, by default in test and dev mode it will
-automatically compile all coffeescripts that have changed before rendering the page.
+Please note that for Jammit compatibility, in test and dev mode (by default) it will
+automatically compile all CoffeeScripts that have changed before rendering the page.
 
 Barista works out of the box with Rails 3 (and theoretically, Rails 2) - with support for Rack if
-you're willing to set it up manually.
+you're willing to set it up manually. More docs on how to set it up for other platforms
+will be posted in the near future.
 
 ## Configuration ##
 
