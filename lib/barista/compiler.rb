@@ -23,7 +23,7 @@ module Barista
       end
       
       def available?
-        CoffeeScript.engine.present? && CoffeeScript.engine.supported?
+        CoffeeScript.engine && CoffeeScript.engine.supported?
       end
 
       def check_availability!(silence = false)

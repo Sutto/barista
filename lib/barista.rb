@@ -183,7 +183,7 @@ module Barista
 
     def change_output_prefix!(framework, prefix = nil)
       framework = Barista::Framework[framework] unless framework.is_a?(Barista::Framework)
-      framework.output_prefix = prefix if framework.present?
+      framework.output_prefix = prefix if framework
     end
 
     def each_framework(include_default = false, &blk)
