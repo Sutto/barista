@@ -39,16 +39,26 @@ module Barista
       end
 
       def autocompile_file(file, force = false, silence_error = false)
+        # Expand the path from the framework.
+        origin_path, framework = Framework.full_path_for(file)
+        return if origin_path.nil?
+        destination_path = framework.output_path_for(file)
+      
+        # read file directly if auto_compile is disabled
+        if !Barista.auto_compile? 
+          if File.exist?(destination_path) 
+            return File.read(destination_path)
+          else 
+            return nil
+          end
+        end
+
+        return File.read(destination_path) unless dirty?(origin_path, destination_path) || force
         # Ensure we have a coffeescript compiler available.
         if !check_availability!(silence_error)
           Barista.debug "The coffeescript compiler at '#{Compiler.bin_path}' is currently unavailable."
           return nil
         end
-        # Expand the path from the framework.
-        origin_path, framework = Framework.full_path_for(file)
-        return if origin_path.nil?
-        destination_path = framework.output_path_for(file)
-        return File.read(destination_path) unless dirty?(origin_path, destination_path) || force
         Barista.debug "Compiling #{file} from framework '#{framework.name}'"
         compiler = new(origin_path, :silence_error => silence_error, :output_path => destination_path)
         content = compiler.to_js

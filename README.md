@@ -72,6 +72,8 @@ and `#option!` (to set the value to true):
 * `add_preamble` - Add a time + path preamble to compiled JS. (Defaults to true in test / dev)
 * `exception_on_error` - Raise an exception on compilation errors (defaults to true)
 * `embedded_interpreter` - Embeds coffeescript + link to coffee file instead of compiling for include tags and haml filters. (Defaults to true in test / dev)
+* `auto_compile` - Automatically compile coffeescript to JS when coffeescript is newer than generated JS file. After turn it off, your server will use generated JS file directly and won't depend on any coffeescript compilers. (Defaults is true)
+
 
 ### Path options
 
