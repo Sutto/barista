@@ -5,7 +5,7 @@ easier. You can think of it as similar to [Compass]() but instead of for Sass, i
 
 Getting started is fairly simple - The short version for Rails 3 is simply:
 
-1. Add `gem 'barista', '~> 1.0'` to your Gemfile
+1. Add `gem 'barista', '~> 1.0'` and `gem 'json'` to your Gemfile
 2. Run `bundle install`
 3. Run `rails generate barista:install`
 
