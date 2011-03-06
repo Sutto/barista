@@ -33,15 +33,15 @@ module Barista
     def hooks
       @hooks ||= Hooks.new
     end
-    
+
     def on_hook(name, *args, &blk)
       hooks.on(name, *args, &blk)
     end
-    
+
     def invoke_hook(name, *args)
       hooks.invoke(name, *args)
     end
-    
+
     has_hook_method :on_compilation_error        => :compilation_failed,
                     :on_compilation              => :compiled,
                     :on_compilation_complete     => :all_compiled,
@@ -51,15 +51,15 @@ module Barista
 
 
     # Configuration - Tweak how you use Barista.
-    
+
     has_boolean_options    :verbose, :bare, :add_filter, :add_preamble, :exception_on_error, :embedded_interpreter, :auto_compile
     has_delegate_methods   Compiler, :bin_path, :bin_path=, :js_path, :js_path=
     has_deprecated_methods :compiler, :compiler=, :compiler_klass, :compiler_klass=
-    
+
     def configure
       yield self if block_given?
     end
-    
+
     def env
       @env ||= default_for_env
     end
@@ -68,7 +68,7 @@ module Barista
       @env = value.to_s.strip
       @env = nil if @env == ''
     end
-    
+
     def logger
       @logger ||= default_for_logger
     end
@@ -160,9 +160,9 @@ module Barista
     def default_for_exception_on_error
       true
     end
-    
+
     def default_for_embedded_interpreter
-      local_env?
+      false
     end
 
     def default_for_auto_compile
@@ -202,14 +202,14 @@ module Barista
     def debug(message)
       logger.debug "[Barista] #{message}"
     end
-    
+
     def setup_defaults
       Barista::HamlFilter.setup
       Barista::Compiler.setup_default_error_logger
     end
 
   end
-  
+
   # Setup integration by default.
   Integration.setup
 
