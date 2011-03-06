@@ -5,12 +5,12 @@ easier. You can think of it as similar to [Compass]() but instead of for Sass, i
 
 Getting started is fairly simple - The short version for Rails 3 is simply:
 
-1. Add `gem 'barista', '~> 1.0'` and `gem 'json'` to your Gemfile
+1. Add `gem 'barista', '~> 1.0'` and, if you're not using Ruby 1.9, `gem 'json'` to your Gemfile
 2. Run `bundle install`
 3. Run `rails generate barista:install`
 
-Place your CoffeeScript's in `app/coffeescripts` and Barista will automatically compile them on change into `public/javascripts`.
 
+Place your CoffeeScript's in `app/coffeescripts` and Barista will automatically compile them on change into `public/javascripts`.
 
 As an added bonus, Barista also gives:
 
@@ -20,6 +20,13 @@ As an added bonus, Barista also gives:
 * When possible, instead of pre-compiling in development and test modes, Barista will embed CoffeeScript in the page for you.
 * Support for Heroku via `therubyracer` and either pre-compiled JS or, optionally, a lightweight Rack app that generates on request.
 
+### A Quick Note on the JSON Gem
+
+Barista indirectly requires the json gem via the coffee-script gem, but it isn't list as a dependency for very
+good reasons. If you encounter errors relating to `require 'json'`, Then you'll need to add either `gem 'json'`
+or `gem 'json_pure'` to your Gemfile.
+
+If you're already running Ruby 1.9, this will be unnecessary as json is now shipped as part of the standard library.
 
 ## General Information
 
