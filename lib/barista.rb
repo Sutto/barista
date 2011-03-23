@@ -177,7 +177,7 @@ module Barista
     end
 
     def compile_all!(force = false, silence_error = true)
-      debug "Compiling all coffeescripts"
+      debug "Compiling all coffeescripts" if Barista.auto_compile?
       Barista.invoke_hook :before_full_compilation
       Framework.exposed_coffeescripts.each do |coffeescript|
         Compiler.autocompile_file coffeescript, force, silence_error
