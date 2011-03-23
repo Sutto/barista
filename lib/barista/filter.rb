@@ -10,7 +10,7 @@ module Barista
     end
 
     def _call(env)
-      Barista.debug 'Compiling all scripts for barista'
+      Barista.debug 'Compiling all scripts for barista' if Barista.auto_compile?
       Barista.compile_all!
       # Now, actually call the app.
       @app.call env
