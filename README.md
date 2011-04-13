@@ -59,6 +59,16 @@ Barista works out of the box with Rails 3 (and theoretically, Rails 2) - with su
 you're willing to set it up manually. More docs on how to set it up for other platforms
 will be posted in the near future.
 
+## Sinatra
+
+To use barista with sinatra, you'll need to first require the barista gem in your application
+and then add the following to your application scope (e.g. if you're using a custom class, there):
+
+    register Barista::Integration::Sinatra
+    
+This will automatically setup the filter as needed, setup a server proxy for the `coffee-script.js`
+file and setup the defaults based on your applications environment
+
 ## Configuration ##
 
 Please note that barista lets you configure several options. To do this,
