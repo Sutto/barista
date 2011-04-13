@@ -1,6 +1,6 @@
 source "http://rubygems.org"
 
-gem 'coffee-script', '~> 2.1.1'
+gem 'coffee-script', '~> 2.1'
 
 group :development, :test do
   gem 'jeweler', '~> 1.0'
