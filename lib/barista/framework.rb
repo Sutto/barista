@@ -20,7 +20,7 @@ module Barista
         collection + fw.exposed_coffeescripts
       end.uniq.sort_by { |f| f.length }
     end
-    
+
     def self.coffeescript_glob_paths
       all(true).map { |fw| fw.coffeescript_glob_path }
     end
@@ -65,7 +65,7 @@ module Barista
     def coffeescripts
       Dir[coffeescript_glob_path]
     end
-    
+
     def coffeescript_glob_path
       @coffeescript_glob_path ||= File.join(@framework_root, "**", "*.coffee")
     end
