@@ -17,14 +17,74 @@
     </p>
     
     <section id='installing-barista'>
-      <header>
-        <h1>Getting Started</h1>
-      </header>
+      <h1 id="getting_started">Getting Started</h1>
+
+      <p>Out of the box, Barista has semi-automatic support for Rails 3.0, Rails 2 (currently untested) and Sinatra. With a minimal amount of effort, you can also make it work in any Rack-based framework.</p>
+
+      <h2 id="rails_3">Rails 3</h2>
+
+      <p>Adding Barista to your Rails 3 application should as simple as adding two gems to your <code>Gemfile</code>, and running  two commands. To get started, open up your <code>Gemfile</code> and add the following:</p>
+
+      <pre><code>gem "json" # Only needed if on Ruby 1.8 / a platform that ships without JSON
+      gem "barista"
+      </code></pre>
+
+      <p>Next, you&#8217;ll need to run the the following:</p>
+
+      <pre><code>bundle install
+      rails g barista:install
+      </code></pre>
+
+      <p>This will install the gem into your application and will generate a file in <code>config/initializers/barista_config.rb</code> that contains a set of options to configure Barista options.</p>
+
+      <h2 id="rails_2">Rails 2</h2>
+
+      <p>Much like on Rails 3, Barista supports deep integration into Rails 2. The only thing missing (that is currently supported in the Rails 3 version) is built in support for generating a config file. If you&#8217;re using bundler in your application, all you need to do is add:</p>
+
+      <pre><code>gem "json" # Only needed if on Ruby 1.8 / a platform that ships without JSON
+      gem "barista"
+      </code></pre>
+
+      <p>To your <code>Gemfile</code>. If you&#8217;re not using bundler, doing <code>gem install json barista</code> and requiring barista both in your application should be enough to get you started.</p>
+
+      <p>If you wish to change the barista configuration, take a look at the  <a href="https://github.com/Sutto/barista/blob/master/lib/generators/barista/install/templates/initializer.rb">Rails 3 initializer</a> and modify it to suite your application as needed.</p>
+
+      <h2 id="sinatra">Sinatra</h2>
+
+      <p>Adding Barista to a Sinatra application is a relatively straight forward affair. Like in Rails 2 and Rails 3, you first need to add and require the barista gem and (optionally, the json gem). Unlike Rails 2 and 3 (which set it up automatically), you must also register the extension in your application. So, in the scope of your app (either the top level scope or the <code>Sinatra::Application</code> subclass you&#8217;re using), you then need to simple add:</p>
+
+      <pre><code>register Barista::Integration::Sinatra
+      </code></pre>
+
+      <p>Which will automatically set up the Barista environment and other similar details (e.g. the automatic compilation filter). Since you don&#8217;t have initializers like you do in Rails, you
+      can then simply run your <code>Barista.configure</code> call and block anywhere before your application starts serving requests.</p>
+
+      <h2 id="other_rack_based_frameworks">Other Rack-based Frameworks</h2>
+
+      <p>Lastly, even though it is built out of the box to support Rails and Sinatra, Barista can also be used with any Rack-based framework. For proper integration, several things must be done. Namely, wherever you declare your middleware (e.g. in a <code>config.ru</code> file), you should register the two pieces of middleware barista uses. <code>Barista::Filter</code> should only be registered when
+      Barista performs compilation (e.g. in development mode) and <code>Barista::Server::Proxy</code> should be registered if you want it to support automatic serving of a <code>coffeescript.js</code> file and / or
+      on the fly (versus pre-request compilation) of CoffeeScripts.</p>
+
+      <p>For example, your <code>config.ru</code> may look like:</p>
+
+      <pre><code># Setup goes here...
+      use Barista::Filter if Barista.add_filter?
+      use Barista::Server::Proxy
+      run MyRackApplication
+      </code></pre>
+
+      <p>Next, you need to configure barista anywhere before your the above code is run. e.g by adding the following immediatly preceeding it:</p>
+
+      <pre><code># Barista (for CoffeeScript Support)
+      Barista.app_root = root
+      Barista.root     = File.join(root, 'coffeescripts')
+      Barista.setup_defaults
+      barista_config = root + '/barista_config.rb'
+      require barista_config if File.exist?(barista_config)
+      </code></pre>
+
+      <p>Hence, if you&#8217;e using, for example, <a href="https://github.com/jlong/serve">serve</a> users should have a <code>config.ru</code> that looks similar to <a href="https://github.com/YouthTree/site-design/blob/master/config.ru">this example</a>.</p>
       
-      <p>
-        Depending on what you're working with, adding Barista to your application is generally a pretty
-        easy affair.
-      </p>
       
     </section>
     
