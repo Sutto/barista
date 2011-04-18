@@ -200,7 +200,7 @@ module Barista
     end
 
     def debug(message)
-      logger.debug "[Barista] #{message}"
+      logger.debug "[Barista] #{message}" if logger
     end
 
     def setup_defaults
