@@ -13,21 +13,21 @@ module Barista
       def js_path=(value)
         CoffeeScript::Source.path = value
       end
-      
+
       def bin_path
         CoffeeScript::Engines::Node.binary
       end
-      
+
       def bin_path=(path)
         CoffeeScript::Engines::Node.binary = path
       end
-      
+
       def available?
         CoffeeScript.engine && CoffeeScript.engine.supported?
       end
 
       def check_availability!(silence = false)
-        available = available?        
+        available = available?
         if !available && Barista.exception_on_error? && !silence
           raise CompilerUnavailableError, "No method of compiling cofffescript is currently available. Please install therubyracer or node."
         end
@@ -43,12 +43,12 @@ module Barista
         origin_path, framework = Framework.full_path_for(file)
         return if origin_path.nil?
         destination_path = framework.output_path_for(file)
-      
+
         # read file directly if auto_compile is disabled
-        if !Barista.auto_compile? 
-          if File.exist?(destination_path) 
+        if !Barista.auto_compile?
+          if File.exist?(destination_path)
             return File.read(destination_path)
-          else 
+          else
             return nil
           end
         end
@@ -65,7 +65,7 @@ module Barista
         compiler.save
         content
       end
-      
+
       def compile_as(file, type)
         origin_path, framework = Framework.full_path_for(file)
         return if origin_path.nil?
@@ -75,11 +75,11 @@ module Barista
           return autocompile_file(file), Time.now
         end
       end
-      
+
       def dirty?(from, to)
         File.exist?(from) && (!File.exist?(to) || File.mtime(to) < File.mtime(from))
       end
-      
+
       def setup_default_error_logger
         Barista.on_compilation_error do |where, message|
           if Barista.verbose?
@@ -88,9 +88,9 @@ module Barista
           end
         end
       end
-      
+
     end
-    
+
     def initialize(context, options = {})
       @compiled = false
       @options  = options
@@ -108,11 +108,19 @@ module Barista
       compile! unless defined?(@compiled) && @compiled
       @compiled_content
     end
-    
+
+    def copyable?(location)
+      location != 'inline' && File.extname(location) == '.js'
+    end
+
     def compile(script, where = 'inline')
-      Barista.invoke_hook :before_compilation, where
-      out = CoffeeScript.compile script, :bare => Barista.bare?
-      Barista.invoke_hook :compiled, where
+      if copyable?(where)
+        out = script
+      else
+        Barista.invoke_hook :before_compilation, where
+        out = CoffeeScript.compile script, :bare => Barista.bare?
+        Barista.invoke_hook :compiled, where
+      end
       out
     rescue CoffeeScript::Error => e
       Barista.invoke_hook :compilation_failed, where, e.message
@@ -139,14 +147,15 @@ module Barista
     protected
 
     def preamble(location)
-      "/* DO NOT MODIFY. This file was compiled #{Time.now.httpdate} from\n * #{location.strip}\n */\n\n"
+      inner_message = copyable?(location) ? "copied" : "compiled"
+      "/* DO NOT MODIFY. This file was #{inner_message} #{Time.now.httpdate} from\n * #{location.strip}\n */\n\n"
     end
-        
+
     def compilation_error_for(location, message)
       details = "Compilation of '#{location}' failed:\n#{message}"
       Barista.verbose? ?  "alert(#{details.to_json});" : nil
     end
-    
+
     def setup_compiler_context(context)
       if context.respond_to?(:read)
         @context = context.read
@@ -163,6 +172,6 @@ module Barista
         @options[:origin] ||= 'inline'
       end
     end
-    
+
   end
 end

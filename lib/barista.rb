@@ -1,5 +1,5 @@
 require 'pathname'
-
+require 'time' # Required for httpdate
 require 'coffee_script'
 
 module Barista
@@ -181,6 +181,10 @@ module Barista
       Barista.invoke_hook :before_full_compilation
       Framework.exposed_coffeescripts.each do |coffeescript|
         Compiler.autocompile_file coffeescript, force, silence_error
+      end
+      debug "Copying all javascripts"
+      Framework.exposed_javascripts.each do |javascript|
+        Compiler.autocompile_file javascript, force, silence_error
       end
       Barista.invoke_hook :all_compiled
       true

@@ -21,14 +21,21 @@ module Barista
       end.uniq.sort_by { |f| f.length }
     end
 
+    def self.exposed_javascripts
+      all(true).inject([]) do |collection, fw|
+        collection + fw.exposed_javascripts
+      end.uniq.sort_by { |f| f.length }
+    end
+
     def self.coffeescript_glob_paths
       all(true).map { |fw| fw.coffeescript_glob_path }
     end
 
     def self.full_path_for(script)
-      script = script.to_s.gsub(/\.js$/, '.coffee').gsub(/^\/+/, '')
+      javascript   = script.to_s.gsub(/\.coffee$/, '.js').gsub(/^\/+/, '')
+      coffeescript = script.to_s.gsub(/\.js$/, '.coffee').gsub(/^\/+/, '')
       all(true).each do |fw|
-        full_path = fw.full_path_for(script)
+        full_path = fw.full_path_for(coffeescript) || fw.full_path_for(javascript)
         return full_path, fw if full_path
       end
       nil
@@ -66,8 +73,16 @@ module Barista
       Dir[coffeescript_glob_path]
     end
 
+    def javascripts
+      Dir[javascript_glob_path]
+    end
+
     def coffeescript_glob_path
       @coffeescript_glob_path ||= File.join(@framework_root, "**", "*.coffee")
+    end
+
+    def javascript_glob_path
+      @javascript_glob_path ||= File.join(@framework_root, "**", "*.js")
     end
 
     def short_name(script)
@@ -77,6 +92,10 @@ module Barista
 
     def exposed_coffeescripts
       coffeescripts.map { |script| short_name(script) }
+    end
+
+    def exposed_javascripts
+      javascripts.map { |script| short_name(script) }
     end
 
     def output_prefix=(value)
