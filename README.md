@@ -146,6 +146,7 @@ and `#option!` (to set the value to true):
 * `root` – The folder path to read CoffeeScripts from. (Defaults to `app/coffeescripts`.)
 * `output_root` – The folder to write compiled JS files to. (Defaults to `public/javascripts`.)
 * `change_output_prefix!` – Method to change the output prefix for a framework.
+* `change_output_root!` - Method to change the output root for a given framework.
 * `verbose` – Whether or not Barista will add a preamble to files.
 * `js_path` – Path to the pure-JavaScript compiler.
 * `env` – The application environment. (Defaults to `Rails.env`.)

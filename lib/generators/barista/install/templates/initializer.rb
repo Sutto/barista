@@ -10,12 +10,14 @@ Barista.configure do |c|
   # Disable auto compile, use generated file directly:
   # c.auto_compile = false
 
-  # Set the compiler
+  # Add a new framework:
+
+  # c.register :tests, :root => Rails.root.join('test', 'coffeescript'), :output_prefix => 'test'
 
   # Disable wrapping in a closure:
-  # c.no_wrap = true
+  # c.bare = true
   # ... or ...
-  # c.no_wrap!
+  # c.bare!
 
   # Change the output root for a framework:
 
@@ -24,12 +26,16 @@ Barista.configure do |c|
   # or for all frameworks...
 
   # c.each_framework do |framework|
-  #   c.change_output_prefix! framework.name, "vendor/#{framework.name}"
+  #   c.change_output_prefix! framework, "vendor/#{framework.name}"
   # end
 
   # or, prefix the path for the app files:
 
   # c.change_output_prefix! :default, 'my-app-name'
+
+  # or, change the directory the framework goes into full stop:
+
+  # c.change_output_prefix! :tests, Rails.root.join('spec', 'javascripts')
 
   # or, hook into the compilation:
 

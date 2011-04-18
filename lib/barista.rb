@@ -195,6 +195,11 @@ module Barista
       framework.output_prefix = prefix if framework
     end
 
+    def change_output_root!(framework, root)
+      framework = Barista::Framework[framework] unless framework.is_a?(Barista::Framework)
+      framework.output_root = root if framework
+    end
+
     def each_framework(include_default = false, &blk)
       Framework.all(include_default).each(&blk)
     end

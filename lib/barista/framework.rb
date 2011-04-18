@@ -41,8 +41,13 @@ module Barista
       nil
     end
 
-    def self.register(name, root)
-      (@all ||= []) << self.new(:name => name, :root => root)
+    def self.register(name, options = nil)
+      if options.is_a?(Hash)
+        framework = self.new(options.merge(:name => name))
+      else
+        framework = self.new(:name => name, :root => root)
+      end
+      (@all ||= []) << framework
     end
 
     def self.[](name)
@@ -63,10 +68,10 @@ module Barista
       end
       # actually setup the framework.
       check_options! options, :name, :root
-      @name           = options[:name].to_s
-      @output_prefix  = options[:output_prefix]
-      @framework_root = File.expand_path(options[:root].to_s)
-      @output_root    = options[:output_root] && Pathname(options[:output_root])
+      @name            = options[:name].to_s
+      @output_prefix   = options[:output_prefix]
+      @framework_root  = File.expand_path(options[:root].to_s)
+      self.output_root = options[:output_root]
     end
 
     def coffeescripts
@@ -110,6 +115,14 @@ module Barista
 
     def output_root
       @output_root || Barista.output_root
+    end
+
+    def output_root=(value)
+      if value.nil?
+        @output_root = nil
+      else
+        @output_root = Pathname(value.to_s)
+      end
     end
 
     def output_path_for(file, format = 'js')
