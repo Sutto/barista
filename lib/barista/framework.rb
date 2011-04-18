@@ -45,7 +45,7 @@ module Barista
       if options.is_a?(Hash)
         framework = self.new(options.merge(:name => name))
       else
-        framework = self.new(:name => name, :root => root)
+        framework = self.new(:name => name, :root => options)
       end
       (@all ||= []) << framework
     end
