@@ -15,11 +15,28 @@ module Barista
       end
 
       def bin_path
-        CoffeeScript::Engines::Node.binary
+        if defined?(CoffeeScript::Engines::Node)
+          CoffeeScript::Engines::Node.binary
+        else
+          execjs_runtime_call :binary
+        end
       end
 
       def bin_path=(path)
-        CoffeeScript::Engines::Node.binary = path
+        if defined?(CoffeeScript::Engines::Node)
+          CoffeeScript::Engines::Node.binary = path
+        else
+          execjs_runtime_call :binary=, path
+        end
+      end
+
+      def execjs_runtime_call(method, *args)
+        runtime = ExecJS.runtime
+        if runtime.respond_to?(method, true)
+          runtime.send method, *args
+        else
+          nil
+        end
       end
 
       def available?

@@ -2,6 +2,11 @@ require 'pathname'
 require 'time' # Required for httpdate
 require 'coffee_script'
 
+# Setup ExecJS extras if present
+if defined?(ExecJS::ExternalRuntime)
+  ExecJS::ExternalRuntime.send :attr_accessor, :binary
+end
+
 module Barista
 
   Error                    = Class.new(StandardError)
