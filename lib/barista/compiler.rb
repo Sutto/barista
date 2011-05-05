@@ -117,6 +117,7 @@ module Barista
     def compile!
       location          = @options.fetch(:origin, 'inline')
       @compiled_content = compile(@context, location)
+      add_namespace(location) if location != 'inline' && Barista.add_namespaces?
       @compiled_content = preamble(location) + @compiled_content if location != 'inline' && Barista.add_preamble?
       @compiled         = true
     end
@@ -167,6 +168,33 @@ module Barista
       inner_message = copyable?(location) ? "copied" : "compiled"
       "/* DO NOT MODIFY. This file was #{inner_message} #{Time.now.httpdate} from\n * #{location.strip}\n */\n\n"
     end
+    
+    def add_namespace(input_path)
+      path_info = parse_path(input_path)
+      if path_info[:directories].count > 0
+        controller = path_info[:directories].join('_')
+        @compiled_content.gsub("\n", "\n  ") # Corrent indentation
+        if path_info[:filename_without_extension] == path_info[:directories].last
+          function_name = 'init'
+        else
+          function_name = path_info[:filename_without_extension]
+        end
+        @compiled_content = "if(typeof #{controller} === 'undefined') var #{controller} = {}\n#{controller}.#{function_name} = function() {\n  #{@compiled_content}\n  }"
+      end
+    end
+    
+    def parse_path(input_path)
+      relative_path = input_path.gsub(Barista.root.to_s, '')
+      filename = relative_path.slice!(/(\w+\.\w+)+\z/)
+      filename_without_extension = filename.slice(/^\w+/)
+      directories = relative_path.split('/').delete_if(&:empty?)
+      {
+        :relative_path              => relative_path, 
+        :filename                   => filename, 
+        :filename_without_extension => filename_without_extension,
+        :directories                => directories
+      }
+    end
 
     def compilation_error_for(location, message)
       details = "Compilation of '#{location}' failed:\n#{message}"
@@ -189,6 +217,6 @@ module Barista
         @options[:origin] ||= 'inline'
       end
     end
-
+    
   end
 end

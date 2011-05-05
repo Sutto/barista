@@ -58,5 +58,9 @@ Barista.configure do |c|
   # Make helpers and the HAML filter output coffee-script instead of the compiled JS.
   # Used in combination with the coffeescript_interpreter_js helper in Rails.
   # c.embedded_interpreter = true
+  
+  # Wrap compiled JS in namespacing functions. Call these with the coffeescript_namespace_init_tag helper
+  # When used in combination with a JS packager allows you to have 1 JS file per site; calling only functions for current controller & action.
+  # c.add_namespacing = true
 
 end
