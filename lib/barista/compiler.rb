@@ -46,7 +46,7 @@ module Barista
       def check_availability!(silence = false)
         available = available?
         if !available && Barista.exception_on_error? && !silence
-          raise CompilerUnavailableError, "No method of compiling cofffescript is currently available. Please install therubyracer or node."
+          raise CompilerUnavailableError, "No method of compiling coffeescript is currently available. Please install therubyracer or node."
         end
         available
       end
