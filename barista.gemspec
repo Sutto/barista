@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{barista}
-  s.version = "1.1.0.pre1"
+  s.version = "1.1.1.pre1"
 
   s.required_rubygems_version = Gem::Requirement.new("> 1.3.1") if s.respond_to? :required_rubygems_version=
   s.authors = ["Darcy Laycock"]
-  s.date = %q{2011-04-18}
+  s.date = %q{2011-06-01}
   s.description = %q{Barista provides simple, integrated support for CoffeeScript in Rack and Rails applications.
 
 Much like Compass does for Sass, It also provides Frameworks (bundleable code which can be shared via Gems).
