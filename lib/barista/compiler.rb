@@ -133,10 +133,10 @@ module Barista
         Barista.invoke_hook :compiled, where
       end
       out
-    rescue CoffeeScript::Error => e
+    rescue ExecJS::Error => e
       Barista.invoke_hook :compilation_failed, where, e.message
       if Barista.exception_on_error? && !@options[:silence]
-        if e.is_a?(CoffeeScript::CompilationError)
+        if e.is_a?(ExecJS::ProgramError)
           where_within_app = where.sub(/#{Regexp.escape(Barista.app_root.to_s)}\/?/, '')
           raise CompilationError, "Error: In #{where_within_app}, #{e.message}"
         else
