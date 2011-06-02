@@ -3,6 +3,8 @@ require 'digest/sha2'
 module Barista
   class Compiler
 
+    UNAVAILABLE_MESSAGE = "No method of compiling coffee-script is currently available. Please see the ExecJS page (https://github.com/sstephenson/execjs) for details on how to set one up."
+
     # TODO: Deprecate.
     class << self
 
@@ -15,19 +17,11 @@ module Barista
       end
 
       def bin_path
-        if defined?(CoffeeScript::Engines::Node)
-          CoffeeScript::Engines::Node.binary
-        else
-          execjs_runtime_call :binary
-        end
+        execjs_runtime_call :binary
       end
 
       def bin_path=(path)
-        if defined?(CoffeeScript::Engines::Node)
-          CoffeeScript::Engines::Node.binary = path
-        else
-          execjs_runtime_call :binary=, path
-        end
+        execjs_runtime_call :binary=, path
       end
 
       def execjs_runtime_call(method, *args)
@@ -40,13 +34,13 @@ module Barista
       end
 
       def available?
-        CoffeeScript.engine && CoffeeScript.engine.supported?
+        ExecJS.runtime and ExecJS.runtime.available?
       end
 
       def check_availability!(silence = false)
         available = available?
         if !available && Barista.exception_on_error? && !silence
-          raise CompilerUnavailableError, "No method of compiling coffeescript is currently available. Please install therubyracer or node."
+          raise CompilerUnavailableError, UNAVAILABLE_MESSAGE
         end
         available
       end
@@ -73,7 +67,7 @@ module Barista
         return File.read(destination_path) unless dirty?(origin_path, destination_path) || force
         # Ensure we have a coffeescript compiler available.
         if !check_availability!(silence_error)
-          Barista.debug "The coffeescript compiler at '#{Compiler.bin_path}' is currently unavailable."
+          Barista.debug UNAVAILABLE_MESSAGE
           return nil
         end
         Barista.debug "Compiling #{file} from framework '#{framework.name}'"

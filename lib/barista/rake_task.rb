@@ -55,12 +55,8 @@ module Barista
     end
 
     def check_availability
-      if !Barista::Compiler.available?
-        if Barista::Compiler.bin_path.nil?
-          $stderr.puts "CoffeeScript doesn't appear to be installed on this system and you're not using an embedded compiler."
-        else
-          $stderr.puts "'#{Barista::Compiler.bin_path}' was unavailable."
-        end
+      unless Barista::Compiler.available?
+        warn Barista::Compiler::UNAVAILABLE_MESSAGE
         exit 1
       end
     end
