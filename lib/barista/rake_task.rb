@@ -1,4 +1,3 @@
-require 'barista'
 require 'rake'
 require 'rake/tasklib'
 
@@ -45,6 +44,8 @@ module Barista
     private
 
     def setup_barista
+      require 'barista'
+
       Barista.env = @environment if @environment
       if @input_directory
         Barista.root = File.expand_path(@input_directory, Dir.pwd)
