@@ -36,10 +36,16 @@ Much like on Rails 3, Barista supports deep integration into Rails 2. The only t
 
     gem "json" # Only needed if on Ruby 1.8 / a platform that ships without JSON
     gem "barista"
-    
+
 To your `Gemfile`. If you're not using bundler, doing `gem install json barista` and requiring barista both in your application should be enough to get you started.
 
 If you wish to change the barista configuration, take a look at the  [Rails 3 initializer](https://github.com/Sutto/barista/blob/master/lib/generators/barista/install/templates/initializer.rb) and modify it to suite your application as needed.
+
+If you wish to use barista tasks with rails 2 project, add
+
+    require "barista/tasks"
+
+To your `Rakefile`.
 
 ### Sinatra
 
@@ -62,7 +68,7 @@ For example, your `config.ru` may look like:
     use Barista::Filter if Barista.add_filter?
     use Barista::Server::Proxy
     run MyRackApplication
-    
+
 Next, you need to configure barista anywhere before your the above code is run. e.g by adding the following immediatly preceeding it:
 
     # Barista (for CoffeeScript Support)
@@ -71,7 +77,7 @@ Next, you need to configure barista anywhere before your the above code is run. 
     Barista.setup_defaults
     barista_config = root + '/barista_config.rb'
     require barista_config if File.exist?(barista_config)
-    
+
 Hence, if you'e using, for example, [serve](https://github.com/jlong/serve) users should have a `config.ru` that looks similar to [this example](https://github.com/YouthTree/site-design/blob/master/config.ru).
 
 ### A Quick Note on the JSON Gem
