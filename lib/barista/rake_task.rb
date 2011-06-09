@@ -1,4 +1,4 @@
-require 'barista' unless defined?(Barista)
+require 'barista'
 require 'rake'
 require 'rake/tasklib'
 
