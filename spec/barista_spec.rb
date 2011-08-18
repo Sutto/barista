@@ -18,12 +18,49 @@ describe Barista do
       Barista::app_root.to_s.should == new_path
     end
   end
+  
+  context 'preamble' do
+    before(:each) do
+      @assets_path = File.expand_path("../assets", __FILE__)
+      @public_path = File.expand_path("../public", __FILE__)
+      Barista.configure do |c|
+        c.root = @assets_path
+        c.output_root = @public_path
+      end
+      FileUtils.rm_rf @public_path if Dir.exist?(@public_path)
+    end
+    it "is written by default" do
+      Barista.add_preamble = true
+      Barista::compile_all!
+      alert_js = IO.read(File.join(@public_path, "alert.js"))
+      alert_js.should include "DO NOT MODIFY"
+    end
+    it "can be disabled" do
+      Barista.add_preamble = false
+      Barista::compile_all!
+      alert_js = IO.read(File.join(@public_path, "alert.js"))
+      alert_js.should_not include "DO NOT MODIFY"
+    end
+  end
 
   context 'compiling files'
 
   context 'compiling all' do
+    before(:each) do
+      @assets_path = File.expand_path("../assets", __FILE__)
+      @public_path = File.expand_path("../public", __FILE__)
+      Barista.configure do |c|
+        c.root = @assets_path
+        c.output_root = @public_path
+      end
+      FileUtils.rm_rf @public_path if Dir.exist?(@public_path)
+    end
     it "compiles nothing" do
       lambda { Barista::compile_all! false, false }.should_not raise_error
+    end
+    it "produces alert.js" do
+      Barista::compile_all!
+      File.exist?(File.join(@public_path, "alert.js")).should be_true
     end
   end
 
