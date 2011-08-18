@@ -1,11 +1,19 @@
+require 'rubygems'
+
 ENV['RAILS_ENV'] ||= 'test'
 
-require 'bundler/setup'
+require "action_controller/railtie"
+require "action_mailer/railtie"
+require "active_resource/railtie"
 
-spec_dir = Rails.root.join("spec")
+require 'rspec/rails'
 
-Dir[spec_dir.join("support/**/*.rb")].each { |f| require f }
+Bundler.require(:default, Rails.env) if defined?(Bundler)
+
+require 'barista'
 
 RSpec.configure do |config|
-  config.mock_with :rr
+  config.mock_with :rspec
+  config.expect_with :rspec
 end
+
