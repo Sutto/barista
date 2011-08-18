@@ -60,7 +60,7 @@ module Barista
 
     # Configuration - Tweak how you use Barista.
 
-    has_boolean_options    :verbose, :bare, :add_filter, :exception_on_error, :embedded_interpreter, :auto_compile, :add_preamble
+    has_boolean_options    :verbose, :bare, :add_filter, :add_preamble, :exception_on_error, :embedded_interpreter, :auto_compile
     has_delegate_methods   Compiler, :bin_path, :bin_path=, :js_path, :js_path=
     has_delegate_methods   Framework, :register
     has_deprecated_methods :compiler, :compiler=, :compiler_klass, :compiler_klass=
