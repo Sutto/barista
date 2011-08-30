@@ -46,6 +46,10 @@ module Barista
     def invoke_hook(name, *args)
       hooks.invoke(name, *args)
     end
+    
+    def has_hook?(name)
+      hooks.has_hook?(name)
+    end
 
     has_hook_method :on_compilation_error        => :compilation_failed,
                     :on_compilation              => :compiled,
@@ -54,14 +58,24 @@ module Barista
                     :before_full_compilation     => :before_full_compilation,
                     :before_compilation          => :before_compilation
 
-
     # Configuration - Tweak how you use Barista.
 
-    has_boolean_options    :verbose, :bare, :add_filter, :add_preamble, :exception_on_error, :embedded_interpreter, :auto_compile
+    has_boolean_options    :verbose, :bare, :add_filter, :exception_on_error, :embedded_interpreter, :auto_compile, :add_preamble
     has_delegate_methods   Compiler, :bin_path, :bin_path=, :js_path, :js_path=
     has_delegate_methods   Framework, :register
     has_deprecated_methods :compiler, :compiler=, :compiler_klass, :compiler_klass=
 
+    def add_preamble(&blk)
+      self.add_preamble = true
+      if block_given?
+        @preamble = blk
+      end
+    end
+    
+    def preamble
+      @preamble
+    end
+    
     def configure
       yield self if block_given?
     end
@@ -156,10 +170,6 @@ module Barista
     end
 
     def default_for_add_filter
-      local_env?
-    end
-
-    def default_for_add_preamble
       local_env?
     end
 

@@ -154,6 +154,14 @@ and `#option!` (to set the value to true):
 * `bin_path` – The path to the `node` executable if non-standard and not using `therubyracer`.
 * All of the hook methods mentioned below.
 
+### Custom Preamble
+
+You can generate a custom preamble using a code block. For example, you can replace the location of the original `.coffee` file by a relative one to `Rails.root`.
+
+    Barista.add_preamble do |location|
+        "/* : DO NOT MODIFY - compiled from #{Pathname.new(location).relative_path_from(Rails.root).to_s}\n\n"
+    end
+
 ## Frameworks
 
 One of the other main features Barista adds (over other tools) is frameworks similar

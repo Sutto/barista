@@ -16,5 +16,9 @@ module Barista
       nil
     end
     
+    def has_hook?(name)
+      @callbacks.has_key?(name)
+    end
+            
   end
 end
