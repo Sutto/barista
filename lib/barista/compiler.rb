@@ -114,7 +114,7 @@ module Barista
       @compiled_content = preamble(location) + @compiled_content if location != 'inline' && Barista.add_preamble?
       @compiled         = true
     end
-
+    
     def to_js
       compile! unless defined?(@compiled) && @compiled
       @compiled_content
@@ -159,7 +159,11 @@ module Barista
 
     def preamble(location)
       inner_message = copyable?(location) ? "copied" : "compiled"
-      "/* DO NOT MODIFY. This file was #{inner_message} #{Time.now.httpdate} from\n * #{location.strip}\n */\n\n"
+      if Barista.preamble
+        Barista.preamble.call(location)
+      else
+        "/* DO NOT MODIFY. This file was #{inner_message} #{Time.now.httpdate} from\n * #{location.strip}\n */\n\n"
+      end
     end
 
     def compilation_error_for(location, message)
