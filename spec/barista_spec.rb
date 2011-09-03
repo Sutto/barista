@@ -27,7 +27,7 @@ describe Barista do
         c.root = @assets_path
         c.output_root = @public_path
       end
-      FileUtils.rm_rf @public_path if Dir.exist?(@public_path)
+      FileUtils.rm_rf @public_path if File.directory?(@public_path)
     end
     it "is written by default" do
       Barista.add_preamble = true
@@ -53,7 +53,7 @@ describe Barista do
         c.root = @assets_path
         c.output_root = @public_path
       end
-      FileUtils.rm_rf @public_path if Dir.exist?(@public_path)
+      FileUtils.rm_rf @public_path if File.directory?(@public_path)
     end
     it "compiles nothing" do
       lambda { Barista::compile_all! false, false }.should_not raise_error
