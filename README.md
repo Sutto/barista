@@ -233,6 +233,10 @@ The following people have all contributed to Barista:
 * [Ben Atkin](https://github.com/benatkin) – Docs work.
 * [Ben Hoskings](https://github.com/benhoskings) – Misc. fixes, added preamble support.
 * [Kim Joar Bekkelund](https://github.com/kjbekkelund) – Docs work.
+* [Jeffrey ODell](https://github.com/jodell) - Fixed an issue with messages during autocompile.
+* [Paul McMahon](https://github.com/pwim) - Fixed a typo.
+* [Ravil Bayramgalin](https://github.com/brainopia) - Fixes for Rakefiles on Rails 2.
+* [Daniel Doubrovkine](https://github.com/dblock) - Dynamic Preambles, Making it easier to spec the application.
 
 Barista was originally heavily inspired by [Bistro Car](https://github.com/jnicklas/bistro_car), but has taken a few fundamentally
 different approach in a few areas.
@@ -240,6 +244,9 @@ different approach in a few areas.
 Barista builds upon the awesome [coffee-script](https://github.com/josh/ruby-coffee-script) gem.
 
 It's all possible thanks to [CoffeeScript](https://github.com/jashkenas/coffee-script) by Jeremy Ashkenas.
+
+If I've missed you're name and you've contributed to Barista, please let me know and I'll add you to the list (or
+fork this document and send a pull request).
 
 ## Note on Patches/Pull Requests ##
 
