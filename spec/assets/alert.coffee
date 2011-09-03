@@ -1,0 +1,3 @@
+hello ->
+  alert 'hello world'
+
