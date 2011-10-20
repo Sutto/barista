@@ -3,6 +3,7 @@ require 'rake/tasklib'
 
 module Barista
   class RakeTask < ::Rake::TaskLib
+    include Rake::DSL
 
     attr_writer :namespace, :task_name
     attr_writer :environment, :input_directory, :output_directory, :rails
