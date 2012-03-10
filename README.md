@@ -43,7 +43,7 @@ If you wish to change the barista configuration, take a look at the  [Rails 3 in
 
 If you wish to use barista tasks with rails 2 project, add
 
-    require "barista/tasks"
+    load "barista/tasks/barista.rake"
 
 To your `Rakefile`.
 
