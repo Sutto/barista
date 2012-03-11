@@ -62,6 +62,19 @@ describe Barista do
       Barista::compile_all!
       File.exist?(File.join(@public_path, "alert.js")).should be_true
     end
+    it "logs when verbose is true" do
+      log = StringIO.new
+      Barista.logger = Logger.new(log)
+      Barista.compile_all!
+      log.string.should =~ /\[Barista\].+/
+    end
+    it "does not log when verbose is false" do
+      log = StringIO.new
+      Barista.logger = Logger.new(log)
+      Barista.verbose = false
+      Barista.compile_all!
+      log.string.should be_empty
+    end
   end
 
 end
