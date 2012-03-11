@@ -225,7 +225,7 @@ module Barista
     end
 
     def debug(message)
-      logger.debug "[Barista] #{message}" if logger
+      logger.debug "[Barista] #{message}" if logger && verbose?
     end
 
     def setup_defaults
