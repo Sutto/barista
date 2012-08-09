@@ -223,7 +223,7 @@ on compilation.
 
 ## Deployment
 
-Add `require 'barisa/capistrano'` to your `deploy.rb`.
+Add `require 'barista/capistrano'` to your `deploy.rb`.
 
 # Contributors / Credits
 
