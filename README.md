@@ -221,6 +221,10 @@ An excellent example of these hooks in use is [barista\_growl](http://github.com
 by Trevor Burnham — a gem perfect for development purposes that automatically shows Growl messages
 on compilation.
 
+## Deployment
+
+Add `require 'barista/capistrano'` to your `deploy.rb`.
+
 # Contributors / Credits
 
 The following people have all contributed to Barista:

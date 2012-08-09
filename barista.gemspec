@@ -28,6 +28,7 @@ Gem::Specification.new do |s|
     "Rakefile",
     "barista.gemspec",
     "lib/barista.rb",
+    "lib/barista/capistrano.rb",
     "lib/barista/compiler.rb",
     "lib/barista/extensions.rb",
     "lib/barista/filter.rb",
