@@ -41,6 +41,13 @@ module Barista
       end
     end
     
+    def coffeescript_namespace_init_tag(controller = params[:controller], action = params[:action])
+      output = defined?(ActiveSupport::SafeBuffer) ? ActiveSupport::SafeBuffer.new : ""
+      output << "#{controller.gsub('/', '_')}.init();\n"
+      output << "#{controller.gsub('/', '_')}.#{action}();"
+      javascript_tag output
+    end
+    
     protected
     
     def normalise_coffeescript_path(path)
