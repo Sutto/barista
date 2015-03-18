@@ -64,6 +64,7 @@ module Barista
     has_delegate_methods   Compiler, :bin_path, :bin_path=, :js_path, :js_path=
     has_delegate_methods   Framework, :register
     has_deprecated_methods :compiler, :compiler=, :compiler_klass, :compiler_klass=
+    attr_accessor :filter
 
     def add_preamble(&blk)
       self.add_preamble = true

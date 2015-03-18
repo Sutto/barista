@@ -6,7 +6,11 @@ module Barista
     end
 
     def call(env)
-      dup._call(env)
+      if !Barista.filter || Barista.filter.(env)
+        dup._call(env)
+      else
+        @app.call(env)
+      end
     end
 
     def _call(env)
