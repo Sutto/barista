@@ -79,7 +79,7 @@ module Barista
         body = "Forbidden\n"
         [403, {
           'Content-Type'   => 'text/plain',
-          'Content-Length' => Rack::Utils.bytesize(body).to_s,
+          'Content-Length' => body.bytesize.to_s,
           'X-Cascade'      => 'pass'
         }, [body]]
       end
@@ -90,7 +90,7 @@ module Barista
         body = "Not Found\n"
         [404, {
           'Content-Type'   => 'text/plain',
-          'Content-Length' => Rack::Utils.bytesize(body).to_s,
+          'Content-Length' => body.bytesize.to_s,
           'X-Cascade'      => 'pass'
         }, [body]]
       end
@@ -99,7 +99,7 @@ module Barista
     def response_for_text(content, content_type = 'text/javascript', modified_at = nil)
       headers = {
         'Content-Type'   => content_type,
-        'Content-Length' => Rack::Utils.bytesize(content).to_s,
+        'Content-Length' => content.bytesize.to_s,
         'Cache-Control'  => "public, max-age=#{CACHE_FOR_SECONDS}"  
       }
       headers.merge!('Last-Modified'  => modified_at.httpdate) unless modified_at.nil?
