@@ -8,7 +8,7 @@ group :development, :test do
   gem 'rspec',        '~> 2.6'
   gem 'rspec-rails',  '~> 2.6'
   gem 'rspec-core',   '~> 2.6'
-  gem 'rdoc',         '~> 2.4'
+  gem 'rdoc',         '~> 3.12'
   gem 'rr',           '~> 1.0'
   gem 'ruby-debug',   :platform => :ruby_18
   gem 'ruby-debug19', '~> 0.11', :platform => :ruby_19
