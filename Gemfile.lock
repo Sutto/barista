@@ -112,7 +112,7 @@ GEM
     thor (0.14.6)
     treetop (1.4.9)
       polyglot (>= 0.3.1)
-    tzinfo (0.3.29)
+    tzinfo (0.3.61)
 
 PLATFORMS
   ruby
